@@ -36,7 +36,7 @@ class _LogInState extends State<LogIn> {
                         child: CircleAvatar(
                           backgroundImage: AssetImage('assets/mimoticon.png'),
                           radius: 100.0,
-                        ))),
+                        ))), //프로필 사진
                 Padding(
                   padding: const EdgeInsets.all(50.0),
                   child: Form(
