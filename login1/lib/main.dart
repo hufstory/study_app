@@ -84,6 +84,19 @@ class _LogInState extends State<LogIn> {
                             child: Column(
                               children: [
                                 TextFormField(
+                                  key: ValueKey(1),
+                                  validator: (value) {
+                                    if(value!.isEmpty || !value.contains('@')) {
+                                      return '올바른 이메일 형식이 아닙니다.';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    Email = value!;
+                                  },
+                                  onChanged: (value) {
+                                    Email = value;
+                                  },
                                   decoration: InputDecoration(
                                       labelText: 'Email',
                                       border: OutlineInputBorder(
