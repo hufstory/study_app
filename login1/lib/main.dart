@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:login1/mainpage.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +31,16 @@ class LogIn extends StatefulWidget {
 }
 
 class _LogInState extends State<LogIn> {
+  final _formKey = GlobalKey<FormState>();
+  final _authentication = FirebaseAuth.instance;
+  String Email = '';
+  String PW = '';
+  void _tryValidation() {
+    final isValid = _formKey.currentState!.validate();
+    if(isValid) {
+      _formKey.currentState!.save();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +61,7 @@ class _LogInState extends State<LogIn> {
                 Padding(
                   padding: const EdgeInsets.all(50.0),
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -69,7 +83,7 @@ class _LogInState extends State<LogIn> {
                           child: Container(
                             child: Column(
                               children: [
-                                TextField(
+                                TextFormField(
                                   decoration: InputDecoration(
                                       labelText: 'Email',
                                       border: OutlineInputBorder(
@@ -83,7 +97,20 @@ class _LogInState extends State<LogIn> {
                                 SizedBox(
                                   height: 30.0,
                                 ),
-                                TextField(
+                                TextFormField(
+                                  key: ValueKey(2),
+                                  validator: (value) {
+                                    if(value!.isEmpty || value.length < 6) {
+                                      return '암호는 최소 6자입니다.';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) {
+                                    PW = value!;
+                                  },
+                                  onChanged: (value) {
+                                    PW = value;
+                                  },
                                   decoration: InputDecoration(
                                       labelText: 'Password',
                                       border: OutlineInputBorder(
@@ -102,7 +129,25 @@ class _LogInState extends State<LogIn> {
                                   width: double.infinity,
                                   height: 50.0,
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      _tryValidation();
+                                      try {
+                                        final User = await _authentication.signInWithEmailAndPassword(
+                                          email: Email,
+                                          password: PW,
+                                        );
+                                        if(User.user != null) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                                    return mainPage();
+                                                  }));
+                                        }
+                                      } catch(err) {
+                                        print(err);
+                                      }
+                                    },
                                     child: Text('Sign in'),
                                   ),
                                 ),
@@ -120,7 +165,26 @@ class _LogInState extends State<LogIn> {
                                               color: Colors.grey),
                                         )),
                                     FlatButton(
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          _tryValidation();
+                                          try {
+                                            final newUser = await _authentication
+                                                .createUserWithEmailAndPassword(
+                                              email: Email,
+                                              password: PW,
+                                            );
+                                            if(newUser.user == null) {print('계정 등록 실패');}
+                                          } catch(err) {
+                                            print(err);
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content:
+                                                    Text('이메일과 암호가 올바른 형식인지 확인해 주세요'),
+                                                  backgroundColor: Colors.blue,
+                                                )
+                                            );
+                                          }
+                                        },
                                         child: Text(
                                           'Sign up',
                                           style: TextStyle(
