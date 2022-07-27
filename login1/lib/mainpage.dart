@@ -1,22 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
+import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class mainPage extends StatelessWidget {
+FirebaseFirestore db = FirebaseFirestore.instance;
+List<String> subjectList = [];
+List<String> dayList = [];
+List docList = [];
+
+
+void readData() {
+  // 과목명 불러오기
+  db.collection("cGwMvIzDFePEHaBNojOgQ2HQdbv1").snapshots().listen(
+        (QuerySnapshot qs) {
+      qs.docs.forEach((doc) => subjectList.add(doc["subject"]));
+      qs.docs.forEach((doc) => dayList.add(doc["day"]));
+    },
+  );
+  db.collection("cGwMvIzDFePEHaBNojOgQ2HQdbv1").snapshots().listen((QuerySnapshot qs) {
+    qs.docs.forEach((doc) => docList.add(doc.data()));
+    print(docList[0]);
+  });
+
+  print(subjectList);
+}
+
+class mainPage extends StatefulWidget {
   const mainPage({Key? key}) : super(key: key);
 
+
   @override
+  State<mainPage> createState() => _mainPageState();
+}
+
+class _mainPageState extends State<mainPage> {
+  @override
+  void initState() {
+    super.initState();
+    readData();
+  }
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp]); // 가로방향 못돌리게
     return Container(
       decoration: const BoxDecoration(
-          gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xffe5cdde), Color(0xff9b7fc1)],
-      )),
-      child: const MaterialApp(
+          image: DecorationImage(image: AssetImage('assets/background.png'))
+      ),
+      child: MaterialApp(
         title: 'mainpage',
         debugShowCheckedModeBanner: false,
         home: MainPage(),
@@ -25,9 +57,14 @@ class mainPage extends StatelessWidget {
   }
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,69 +168,52 @@ class MainPage extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('자료구조',
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold)),
-                      Text('알고리즘',
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold)),
-                      Text('컴퓨팅사고',
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold)),
-                      Text('수리통계학',
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold)),
-                      Text('선형대수',
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold))
-                    ],
-                  ),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: subjectList.map((e) => Text(e)).toList()),
                 ),
               ),
               Stack(// 타이머 부분
                   children: [
-                Container(
-                  padding: const EdgeInsets.only(bottom: 15.0, right: 25.0),
-                  alignment: Alignment.bottomRight,
-                  width: 180,
-                  height: 180,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                  ),
-                  child: RichText(
-                    text: const TextSpan(
-                        text: '3',
-                        style: TextStyle(
-                            color: Color(0xff645E5E),
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold),
-                        children: [
-                          TextSpan(
-                              text: 'H',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold)),
-                          TextSpan(
-                              text: ' 47',
-                              style: TextStyle(
-                                  color: Color(0xff645E5E),
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold)),
-                          TextSpan(
-                              text: 'M',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold))
-                        ]),
-                  ),
-                ),
-                Image.asset('assets/flower.png', width: 120, height: 120)
-              ]),
+                    Container(
+                      padding: const EdgeInsets.only(bottom: 15.0, right: 25.0),
+                      alignment: Alignment.bottomRight,
+                      width: 180,
+                      height: 180,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: RichText(
+                        text: const TextSpan(
+                            text: '3',
+                            style: TextStyle(
+                                color: Color(0xff645E5E),
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold),
+                            children: [
+                              TextSpan(
+                                  text: 'H',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                  text: ' 47',
+                                  style: TextStyle(
+                                      color: Color(0xff645E5E),
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                  text: 'M',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold))
+                            ]),
+                      ),
+                    ),
+                    Image.asset('assets/flower.png', width: 120, height: 120)
+                  ]),
             ],
           ),
           Container(
@@ -230,7 +250,11 @@ class MainPage extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0)),
-                child: TimeTable(),
+                child: subjectList.isEmpty
+                    ? Center(child: CircularProgressIndicator())
+                    : TimeTable(
+                  subjectList1: [...subjectList],
+                ),
               ),
             ],
           ),
@@ -240,9 +264,12 @@ class MainPage extends StatelessWidget {
   }
 }
 
-// 시간표 위젯, 사용 패키지: flutter_timetable_view
 class TimeTable extends StatefulWidget {
-  const TimeTable({Key? key}) : super(key: key);
+  TimeTable({Key? key, required this.subjectList1}) : super(key: key);
+
+  final List subjectList1; // 스터디 과목 리스트
+
+  List<String> dayList = ['월', '화', '수', '목', '금'];
 
   @override
   State<TimeTable> createState() => _TimeTableState();
@@ -265,67 +292,52 @@ class _TimeTableState extends State<TimeTable> {
     );
   }
 
+  List<TableEvent> _buildTableEvent() {
+    return [
+      TableEvent(
+          title: widget.subjectList1[0].toString(),
+          start: TableEventTime(
+              hour: docList[0]["startHour"], minute: docList[0]["startMin"]),
+          end: TableEventTime(
+              hour: docList[0]["endHour"], minute: docList[0]["endMin"]),
+          decoration: BoxDecoration(color: Colors.blue),
+          textStyle: TextStyle(fontSize: 12),
+          padding: EdgeInsets.all(3.0))
+    ];
+  }
+
   List<LaneEvents> _buildLaneEvents() {
     return [
       LaneEvents(
           lane: Lane(
-              name: '월', width: 60, textStyle: TextStyle(color: Colors.grey)),
-          events: [
-            TableEvent(
-                title: '선형대수',
-                start: TableEventTime(hour: 9, minute: 30),
-                end: TableEventTime(hour: 11, minute: 20),
-                decoration: BoxDecoration(color: Colors.orange),
-                textStyle: TextStyle(fontSize: 12),
-                padding: EdgeInsets.all(3.0)),
-          ]),
+              name: widget.dayList[0].toString(),
+              width: 60,
+              textStyle: TextStyle(color: Colors.grey)),
+          events: _buildTableEvent()),
       LaneEvents(
           lane: Lane(
-              name: '화', width: 60, textStyle: TextStyle(color: Colors.grey)),
-          events: [
-            TableEvent(
-                title: '자료구조',
-                start: TableEventTime(hour: 11, minute: 30),
-                end: TableEventTime(hour: 13, minute: 20),
-                decoration: BoxDecoration(color: Colors.red),
-                textStyle: TextStyle(fontSize: 12),
-                padding: EdgeInsets.all(3.0))
-          ]),
+              name: widget.dayList[1].toString(),
+              width: 60,
+              textStyle: TextStyle(color: Colors.grey)),
+          events: _buildTableEvent()),
       LaneEvents(
           lane: Lane(
-              name: '수', width: 60, textStyle: TextStyle(color: Colors.grey)),
-          events: [
-            TableEvent(
-                title: '수리통계학',
-                start: TableEventTime(hour: 13, minute: 30),
-                end: TableEventTime(hour: 15, minute: 20),
-                decoration: BoxDecoration(color: Colors.green),
-                textStyle: TextStyle(fontSize: 12),
-                padding: EdgeInsets.all(3.0)),
-            TableEvent(
-                title: '컴퓨팅사고',
-                start: TableEventTime(hour: 15, minute: 30),
-                end: TableEventTime(hour: 17, minute: 20),
-                decoration: BoxDecoration(color: Colors.blue),
-                textStyle: TextStyle(fontSize: 12),
-                padding: EdgeInsets.all(3.0)),
-          ]),
+              name: widget.dayList[2].toString(),
+              width: 60,
+              textStyle: TextStyle(color: Colors.grey)),
+          events: _buildTableEvent()),
       LaneEvents(
           lane: Lane(
-              name: '목', width: 60, textStyle: TextStyle(color: Colors.grey)),
-          events: []),
+              name: widget.dayList[3].toString(),
+              width: 60,
+              textStyle: TextStyle(color: Colors.grey)),
+          events: _buildTableEvent()),
       LaneEvents(
           lane: Lane(
-              name: '금', width: 60, textStyle: TextStyle(color: Colors.grey)),
-          events: [
-            TableEvent(
-                title: '알고리즘',
-                start: TableEventTime(hour: 11, minute: 30),
-                end: TableEventTime(hour: 13, minute: 20),
-                decoration: BoxDecoration(color: Colors.purple),
-                textStyle: TextStyle(fontSize: 12),
-                padding: EdgeInsets.all(3.0)),
-          ]),
+              name: widget.dayList[4].toString(),
+              width: 60,
+              textStyle: TextStyle(color: Colors.grey)),
+          events: _buildTableEvent()),
     ];
   }
 }
