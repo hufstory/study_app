@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'firebase_options.dart';
@@ -9,17 +10,18 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 List<String> subjectList = [];
 List<String> dayList = [];
 List docList = [];
+var user = FirebaseAuth.instance.currentUser;
+var uid = user?.uid;
 
-
-void readData() {
+readData() async {
   // 과목명 불러오기
-  db.collection("cGwMvIzDFePEHaBNojOgQ2HQdbv1").snapshots().listen(
+  db.collection(uid!).snapshots().listen(
         (QuerySnapshot qs) {
       qs.docs.forEach((doc) => subjectList.add(doc["subject"]));
       qs.docs.forEach((doc) => dayList.add(doc["day"]));
     },
   );
-  db.collection("cGwMvIzDFePEHaBNojOgQ2HQdbv1").snapshots().listen((QuerySnapshot qs) {
+  db.collection(uid!).snapshots().listen((QuerySnapshot qs) {
     qs.docs.forEach((doc) => docList.add(doc.data()));
     print(docList[0]);
   });
