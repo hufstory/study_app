@@ -7,16 +7,16 @@ import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
-List<String> subjectList = [];
+Set<String> subjectList = {};
 List<String> dayList = [];
 List docList = [];
+
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
 
 readData() async {
   // 과목명 불러오기
-  db.collection(uid!).snapshots().listen(
-        (QuerySnapshot qs) {
+  db.collection(uid!).snapshots().listen((QuerySnapshot qs) {
       qs.docs.forEach((doc) => subjectList.add(doc["subject"]));
       qs.docs.forEach((doc) => dayList.add(doc["day"]));
     },
@@ -25,9 +25,10 @@ readData() async {
     qs.docs.forEach((doc) => docList.add(doc.data()));
     print(docList[0]);
   });
-
   print(subjectList);
 }
+
+
 
 class mainPage extends StatefulWidget {
   const mainPage({Key? key}) : super(key: key);
@@ -40,8 +41,8 @@ class mainPage extends StatefulWidget {
 class _mainPageState extends State<mainPage> {
   @override
   void initState() {
-    super.initState();
     readData();
+    super.initState();
   }
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
@@ -150,117 +151,100 @@ class _MainPageState extends State<MainPage> {
           ],
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: StreamBuilder<QuerySnapshot>(
+        stream: db.collection(uid!).snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          }
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Container(
-                // 스터디 목록 부분
-                width: 180,
-                height: 180,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  image: DecorationImage(
-                    image: AssetImage('assets/grass.png'),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: subjectList.map((e) => Text(e)).toList()),
-                ),
-              ),
-              Stack(// 타이머 부분
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 15.0, right: 25.0),
-                      alignment: Alignment.bottomRight,
-                      width: 180,
-                      height: 180,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                      ),
-                      child: RichText(
-                        text: const TextSpan(
-                            text: '3',
-                            style: TextStyle(
-                                color: Color(0xff645E5E),
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold),
-                            children: [
-                              TextSpan(
-                                  text: 'H',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 35,
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: ' 47',
-                                  style: TextStyle(
-                                      color: Color(0xff645E5E),
-                                      fontSize: 35,
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: 'M',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 35,
-                                      fontWeight: FontWeight.bold))
-                            ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    // 스터디 목록 부분
+                    width: 180,
+                    height: 180,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      image: DecorationImage(
+                        image: AssetImage('assets/grass.png'),
                       ),
                     ),
-                    Image.asset('assets/flower.png', width: 120, height: 120)
-                  ]),
-            ],
-          ),
-          Container(
-            // audio player
-            width: 377.1,
-            height: 45,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
-            child: Row(
-              children: [
-                ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.grey,
-                        fixedSize: const Size(30, 30),
-                        shape: const CircleBorder(),
-                        elevation: 0.0),
-                    child: const Icon(Icons.play_arrow)),
-                const Text(
-                  '비 내리는 소리.mp3',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                )
-              ],
-            ),
-          ),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                // 시간표
-                width: 377.1,
-                height: 330,
-                padding: EdgeInsets.all(5.7),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20.0)),
-                child: subjectList.isEmpty
-                    ? Center(child: CircularProgressIndicator())
-                    : TimeTable(
-                  subjectList1: [...subjectList],
-                ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: subjectList.map((e) => Text(e)).toList()),
+                    ),
+                  ),
+                  Stack(// 타이머 부분
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 15.0, right: 25.0),
+                          alignment: Alignment.bottomRight,
+                          width: 180,
+                          height: 180,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                          ),
+                          child: RichText(
+                            text: const TextSpan(
+                                text: '3',
+                                style: TextStyle(
+                                    color: Color(0xff645E5E),
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold),
+                                children: [
+                                  TextSpan(
+                                      text: 'H',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 35,
+                                          fontWeight: FontWeight.bold)),
+                                  TextSpan(
+                                      text: ' 47',
+                                      style: TextStyle(
+                                          color: Color(0xff645E5E),
+                                          fontSize: 35,
+                                          fontWeight: FontWeight.bold)),
+                                  TextSpan(
+                                      text: 'M',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 35,
+                                          fontWeight: FontWeight.bold))
+                                ]),
+                          ),
+                        ),
+                        Image.asset('assets/flower.png', width: 120, height: 120)
+                      ]),
+                ],
+              ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    // 시간표
+                    width: 377.1,
+                    height: 330,
+                    padding: EdgeInsets.all(5.7),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: TimeTable(
+                      subjectList1: [...subjectList],
+                    ),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
+          );
+        }
       ),
     );
   }
@@ -271,7 +255,7 @@ class TimeTable extends StatefulWidget {
 
   final List subjectList1; // 스터디 과목 리스트
 
-  List<String> dayList = ['월', '화', '수', '목', '금'];
+  final List<String> dayList = ['월', '화', '수', '목', '금'];
 
   @override
   State<TimeTable> createState() => _TimeTableState();
