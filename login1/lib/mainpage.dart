@@ -6,6 +6,8 @@ import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'timer.dart';
+
 FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List<String> dayList = [];
@@ -194,34 +196,7 @@ class _MainPageState extends State<MainPage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(30)),
                         ),
-                        child: RichText(
-                          text: const TextSpan(
-                              text: '3',
-                              style: TextStyle(
-                                  color: Color(0xff645E5E),
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold),
-                              children: [
-                                TextSpan(
-                                    text: 'H',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(
-                                    text: ' 47',
-                                    style: TextStyle(
-                                        color: Color(0xff645E5E),
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(
-                                    text: 'M',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.bold))
-                              ]),
-                        ),
+                        child: Timer(),
                       ),
                       Image.asset('assets/flower.png', width: 120, height: 120)
                     ]),
