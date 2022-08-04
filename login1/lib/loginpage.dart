@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -167,7 +168,16 @@ class _LogInState extends State<LogIn> {
                                               email: Email,
                                               password: PW,
                                             );
-                                            if(newUser.user == null) {print('계정 등록 실패');}
+                                            if(newUser.user == null) {
+                                              print('계정 등록 실패');
+                                              return;
+                                            }
+                                            // FirebaseFirestore.instance.collection('users').add({
+                                            //   'Email': Email,
+                                            //   'Nickname': Nickname,
+                                            //   'studyTime': 0,
+                                            //   'participatingStudyGroup': [],
+                                            // });
                                           } catch(err) {
                                             print(err);
                                             ScaffoldMessenger.of(context).showSnackBar(
