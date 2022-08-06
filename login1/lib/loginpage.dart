@@ -172,6 +172,14 @@ class _LogInState extends State<LogIn> {
                                               print('계정 등록 실패');
                                               return;
                                             }
+                                            db.collection(uid!).add({
+                                              'subject' : 'test',
+                                              'day' : '월',
+                                              'startHour' : 9,
+                                              'startMin' : 30,
+                                              'endHour' : 11,
+                                              'endMin' : 20
+                                            });
                                             // FirebaseFirestore.instance.collection('users').add({
                                             //   'Email': Email,
                                             //   'Nickname': Nickname,

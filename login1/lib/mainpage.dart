@@ -5,33 +5,33 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:login1/loginpage.dart';
 
 import 'timer.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
-List<String> dayList = [];
 List docList = [];
-Map<String, String> sortList = {};
+List docIDList = [];
 
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
+var _auth = FirebaseAuth.instance;
 
 Future readData() async {
   // 과목명 불러오기
   db.collection(uid!).snapshots().listen(
     (QuerySnapshot qs) {
       qs.docs.forEach((doc) => subjectList.add(doc["subject"]));
-      qs.docs.forEach((doc) => dayList.add(doc["day"]));
     },
   );
   db.collection(uid!).snapshots().listen((QuerySnapshot qs) {
     qs.docs.forEach((doc) => docList.add(doc.data()));
+    qs.docs.forEach((doc) => docIDList.add(doc.id));
     print(docList[0]);
     print(docList[0]["day"]);
   });
 }
-
 
 class mainPage extends StatefulWidget {
   const mainPage({Key? key}) : super(key: key);
@@ -202,6 +202,12 @@ class _MainPageState extends State<MainPage> {
                     ]),
                   ],
                 ),
+                ElevatedButton(
+                    onPressed: (){
+                      signOut();
+                      Navigator.of(context).pop(LogIn());
+                    },
+                    child: Text("logout")),
                 Stack(
                   alignment: Alignment.center,
                   children: [
@@ -230,8 +236,6 @@ class TimeTable extends StatefulWidget {
   TimeTable({Key? key, required this.subjectList1}) : super(key: key);
 
   final List subjectList1; // 스터디 과목 리스트
-
-
   @override
   State<TimeTable> createState() => _TimeTableState();
 }
@@ -240,30 +244,33 @@ class _TimeTableState extends State<TimeTable> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: db.collection(uid!).snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(),);
-        }
-        return TimetableView(
-          laneEventsList: _buildLaneEvents(),
-          timetableStyle: const TimetableStyle(
-              startHour: 9,
-              endHour: 19,
-              laneWidth: 62,
-              laneHeight: 20,
-              decorationLineBorderColor: Colors.grey,
-              timeItemTextColor: Colors.grey,
-              timeItemHeight: 45,
-              timeItemWidth: 50),
-        );
-      }
-    );
+        stream: db.collection(uid!).snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return TimetableView(
+            laneEventsList: _buildLaneEvents(),
+            timetableStyle: const TimetableStyle(
+                startHour: 9,
+                endHour: 19,
+                laneWidth: 62,
+                laneHeight: 20,
+                decorationLineBorderColor: Colors.grey,
+                timeItemTextColor: Colors.grey,
+                timeItemHeight: 45,
+                timeItemWidth: 50),
+          );
+        });
   }
 
   _buildTableEvent1() {
+    var isNull = true;
     for (int i = 0; i < docList.length; i++) {
       if (docList[i]["day"] == "월") {
+        isNull = false;
         return [
           TableEvent(
               title: docList[i]["subject"].toString(),
@@ -273,16 +280,22 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 12),
+              textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
         ];
       }
+    }
+    if (isNull == true) {
+      List<TableEvent> temp = [];
+      return temp;
     }
   }
 
   _buildTableEvent2() {
+    var isNull = true;
     for (int i = 0; i < docList.length; i++) {
       if (docList[i]["day"] == "화") {
+        isNull = false;
         return [
           TableEvent(
               title: docList[i]["subject"].toString(),
@@ -292,16 +305,22 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 12),
+              textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
         ];
       }
+    }
+    if (isNull == true) {
+      List<TableEvent> temp = [];
+      return temp;
     }
   }
 
   _buildTableEvent3() {
+    var isNull = true;
     for (int i = 0; i < docList.length; i++) {
       if (docList[i]["day"] == "수") {
+        isNull = false;
         return [
           TableEvent(
               title: docList[i]["subject"].toString(),
@@ -311,16 +330,22 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 12),
+              textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
         ];
       }
+    }
+    if (isNull == true) {
+      List<TableEvent> temp = [];
+      return temp;
     }
   }
 
   _buildTableEvent4() {
+    var isNull = true;
     for (int i = 0; i < docList.length; i++) {
       if (docList[i]["day"] == "목") {
+        isNull = false;
         return [
           TableEvent(
               title: docList[i]["subject"].toString(),
@@ -330,16 +355,22 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 12),
+              textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
         ];
       }
     }
+    if (isNull == true) {
+      List<TableEvent> temp = [];
+      return temp;
+    }
   }
 
   _buildTableEvent5() {
+    var isNull = true;
     for (int i = 0; i < docList.length; i++) {
       if (docList[i]["day"] == "금") {
+        isNull = false;
         return [
           TableEvent(
               title: docList[i]["subject"].toString(),
@@ -349,10 +380,14 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 12),
+              textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
         ];
       }
+    }
+    if (isNull == true) {
+      List<TableEvent> temp = [];
+      return temp;
     }
   }
 
@@ -360,34 +395,33 @@ class _TimeTableState extends State<TimeTable> {
     return [
       LaneEvents(
           lane: Lane(
-              name: '월',
-              width: 60,
-              textStyle: TextStyle(color: Colors.grey)),
+              name: '월', width: 60, textStyle: TextStyle(color: Colors.grey)),
           events: _buildTableEvent1()),
       LaneEvents(
           lane: Lane(
-              name: '화',
-              width: 60,
-              textStyle: TextStyle(color: Colors.grey)),
+              name: '화', width: 60, textStyle: TextStyle(color: Colors.grey)),
           events: _buildTableEvent2()),
       LaneEvents(
           lane: Lane(
-              name: '수',
-              width: 60,
-              textStyle: TextStyle(color: Colors.grey)),
+              name: '수', width: 60, textStyle: TextStyle(color: Colors.grey)),
           events: _buildTableEvent3()),
       LaneEvents(
           lane: Lane(
-              name: '목',
-              width: 60,
-              textStyle: TextStyle(color: Colors.grey)),
+              name: '목', width: 60, textStyle: TextStyle(color: Colors.grey)),
           events: _buildTableEvent4()),
       LaneEvents(
           lane: Lane(
-              name: '금',
-              width: 60,
-              textStyle: TextStyle(color: Colors.grey)),
+              name: '금', width: 60, textStyle: TextStyle(color: Colors.grey)),
           events: _buildTableEvent5()),
     ];
+  }
+}
+
+Future signOut() async {
+  try {
+    return await _auth.signOut();
+  } catch (e) {
+    print('error: $e');
+    return null;
   }
 }
