@@ -172,7 +172,7 @@ class _LogInState extends State<LogIn> {
                                               print('계정 등록 실패');
                                               return;
                                             }
-                                            db.collection(uid!).add({
+                                            db.collection('user').doc(uid!).collection('study').add({
                                               'subject' : 'test',
                                               'day' : '월',
                                               'startHour' : 9,
