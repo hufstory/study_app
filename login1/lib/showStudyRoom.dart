@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 FirebaseFirestore db = FirebaseFirestore.instance;
 
 Set ruleList = {};
-Set alertList = [];
-Set questionList = [];
-Set talkList = [];
+Set alertList = {};
+Set questionList = {};
+Set talkList = {};
 
 class StudyRoom extends StatefulWidget {
   const StudyRoom({Key? key, required this.studyName}) : super(key: key);
