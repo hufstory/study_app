@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'package:login1/showStudyRoom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:login1/loginpage.dart';
 
 import 'timer.dart';
 
@@ -20,11 +19,16 @@ var _auth = FirebaseAuth.instance;
 Future readData() async {
   // 과목명 불러오기
   db.collection('user').doc(uid!).collection('study').snapshots().listen(
-        (QuerySnapshot qs) {
+    (QuerySnapshot qs) {
       qs.docs.forEach((doc) => subjectList.add(doc["subject"]));
     },
   );
-  db.collection('user').doc(uid!).collection('study').snapshots().listen((QuerySnapshot qs) {
+  db
+      .collection('user')
+      .doc(uid!)
+      .collection('study')
+      .snapshots()
+      .listen((QuerySnapshot qs) {
     qs.docs.forEach((doc) => docList.add(doc.data()));
     qs.docs.forEach((doc) => docIDList.add(doc.id));
     print(docList[0]);
@@ -75,7 +79,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(27.0),
+        preferredSize: const Size.fromHeight(27.0),
         child: AppBar(
           title: const Text(' '),
           centerTitle: true,
@@ -85,16 +89,15 @@ class _MainPageState extends State<MainPage> {
           actions: [
             Builder(
               // Drawer 아이콘 색 지정 위해 Builder 위젯 사용
-              builder: (context) =>
-                  IconButton(
-                    icon: const Icon(
-                      Icons.menu,
-                      color: Colors.black,
-                    ),
-                    onPressed: () {
-                      Scaffold.of(context).openEndDrawer(); // Drawer 열음
-                    },
-                  ),
+              builder: (context) => IconButton(
+                icon: const Icon(
+                  Icons.menu,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer(); // Drawer 열음
+                },
+              ),
             )
           ],
         ),
@@ -158,7 +161,7 @@ class _MainPageState extends State<MainPage> {
           stream: db.collection(uid!).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -184,32 +187,30 @@ class _MainPageState extends State<MainPage> {
                             children: subjectList.map((e) => Text(e)).toList()),
                       ),
                     ),
-                    Stack( // 타이머 부분
+                    Stack(// 타이머 부분
                         children: [
-                          Container(
-                            padding:
+                      Container(
+                        padding:
                             const EdgeInsets.only(bottom: 15.0, right: 25.0),
-                            alignment: Alignment.bottomRight,
-                            width: 180,
-                            height: 180,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                  30)),
-                            ),
-                            child: Timer(),
-                          ),
-                          Image.asset(
-                              'assets/flower.png', width: 120, height: 120)
-                        ]),
+                        alignment: Alignment.bottomRight,
+                        width: 180,
+                        height: 180,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                        ),
+                        child: Timer(),
+                      ),
+                      Image.asset('assets/flower.png', width: 120, height: 120)
+                    ]),
                   ],
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      signOut();
-                      Navigator.of(context).pop(LogIn());
-                    },
-                    child: Text("logout")),
+                // ElevatedButton(
+                //     onPressed: () {
+                //       signOut();
+                //       Navigator.of(context).pop(LogIn());
+                //     },
+                //     child: const Text("logout")),
                 Stack(
                   alignment: Alignment.center,
                   children: [
@@ -217,7 +218,7 @@ class _MainPageState extends State<MainPage> {
                       // 시간표
                       width: 377.1,
                       height: 330,
-                      padding: EdgeInsets.all(5.7),
+                      padding: const EdgeInsets.all(5.7),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20.0)),
@@ -249,7 +250,7 @@ class _TimeTableState extends State<TimeTable> {
         stream: db.collection(uid!).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -278,8 +279,11 @@ class _TimeTableState extends State<TimeTable> {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyName: docList[i]["subject"].toString(),
+                            )));
+                print(docList[i]["subject"]);
               },
               title: docList[i]["subject"].toString(),
               start: TableEventTime(
@@ -287,10 +291,9 @@ class _TimeTableState extends State<TimeTable> {
                   minute: docList[i]["startMin"]),
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0)
-          ),
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0)),
         ];
       }
     }
@@ -310,8 +313,11 @@ class _TimeTableState extends State<TimeTable> {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyName: docList[i]["subject"].toString(),
+                            )));
+                print(docList[i]["subject"]);
               },
               title: docList[i]["subject"].toString(),
               start: TableEventTime(
@@ -319,9 +325,9 @@ class _TimeTableState extends State<TimeTable> {
                   minute: docList[i]["startMin"]),
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0))
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0))
         ];
       }
     }
@@ -341,8 +347,10 @@ class _TimeTableState extends State<TimeTable> {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyName: docList[i]["subject"].toString(),
+                            )));
               },
               title: docList[i]["subject"].toString(),
               start: TableEventTime(
@@ -350,9 +358,9 @@ class _TimeTableState extends State<TimeTable> {
                   minute: docList[i]["startMin"]),
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0))
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0))
         ];
       }
     }
@@ -372,8 +380,10 @@ class _TimeTableState extends State<TimeTable> {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyName: docList[i]["subject"].toString(),
+                            )));
               },
               title: docList[i]["subject"].toString(),
               start: TableEventTime(
@@ -381,9 +391,9 @@ class _TimeTableState extends State<TimeTable> {
                   minute: docList[i]["startMin"]),
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0))
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0))
         ];
       }
     }
@@ -403,8 +413,10 @@ class _TimeTableState extends State<TimeTable> {
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyName: docList[i]["subject"].toString(),
+                            )));
               },
               title: docList[i]["subject"].toString(),
               start: TableEventTime(
@@ -412,9 +424,9 @@ class _TimeTableState extends State<TimeTable> {
                   minute: docList[i]["startMin"]),
               end: TableEventTime(
                   hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0))
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0))
         ];
       }
     }
@@ -428,19 +440,27 @@ class _TimeTableState extends State<TimeTable> {
     return [
       LaneEvents(
           lane: Lane(
-              name: '월', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '월',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent1()),
       LaneEvents(
           lane: Lane(
-              name: '화', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '화',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent2()),
       LaneEvents(
           lane: Lane(
-              name: '수', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '수',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent3()),
       LaneEvents(
           lane: Lane(
-              name: '목', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '목',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent4()),
       LaneEvents(
           lane: Lane(
