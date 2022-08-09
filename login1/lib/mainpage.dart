@@ -283,6 +283,7 @@ class _TimeTableState extends State<TimeTable> {
                         builder: (context) => StudyRoom(
                               studyName: docList[i]["subject"].toString(),
                             )));
+                print(docList[i]["subject"]);
               },
               title: docList[i]["subject"].toString(),
               start: TableEventTime(
@@ -316,6 +317,7 @@ class _TimeTableState extends State<TimeTable> {
                         builder: (context) => StudyRoom(
                               studyName: docList[i]["subject"].toString(),
                             )));
+                print(docList[i]["subject"]);
               },
               title: docList[i]["subject"].toString(),
               start: TableEventTime(

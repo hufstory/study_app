@@ -58,6 +58,10 @@ class _StudyRoomState extends State<StudyRoom> {
 
   initState() {
     readData();
+    ruleList.clear();
+    alertList.clear();
+    questionList.clear();
+    talkList.clear();
     super.initState();
   }
 
