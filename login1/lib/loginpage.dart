@@ -131,6 +131,7 @@ class _LogInState extends State<LogIn> {
                                           email: Email,
                                           password: PW,
                                         );
+                                        print(User.user!.uid);
                                         if(User.user != null) {
                                           // Navigator.push(
                                           //     context,
@@ -172,20 +173,20 @@ class _LogInState extends State<LogIn> {
                                               print('계정 등록 실패');
                                               return;
                                             }
-                                            db.collection('user').doc(uid!).collection('study').add({
-                                              'subject' : 'test',
-                                              'day' : '월',
-                                              'startHour' : 9,
-                                              'startMin' : 30,
-                                              'endHour' : 11,
-                                              'endMin' : 20
-                                            });
-                                            // FirebaseFirestore.instance.collection('users').add({
-                                            //   'Email': Email,
-                                            //   'Nickname': Nickname,
-                                            //   'studyTime': 0,
-                                            //   'participatingStudyGroup': [],
+                                            // db.collection('user').doc(uid!).collection('study').add({
+                                            //   'subject' : 'test',
+                                            //   'day' : '월',
+                                            //   'startHour' : 9,
+                                            //   'startMin' : 30,
+                                            //   'endHour' : 11,
+                                            //   'endMin' : 20
                                             // });
+                                            FirebaseFirestore.instance.collection('users').add({
+                                              'Email': Email,
+                                              //'Nickname': Nickname,
+                                              'studyTime': 0,
+                                              'participatingStudyGroup': [],
+                                            });
                                           } catch(err) {
                                             print(err);
                                             ScaffoldMessenger.of(context).showSnackBar(
