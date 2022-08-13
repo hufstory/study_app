@@ -136,8 +136,8 @@ class _MainPageState extends State<MainPage> {
                             ),
                             child: Timer(),
                           ),
-                          Image.asset(
-                              'assets/flower.png', width: 120, height: 120)
+                          // Image.asset(
+                          //     'assets/flower.png', width: 120, height: 120)
                         ]),
                   ],
                 ),
