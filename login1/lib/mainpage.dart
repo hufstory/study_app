@@ -17,29 +17,47 @@ String getToday() {
   return strToday;
 }
 
-
 FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List docList = [];
-List docIDList = [];
+List scheduleList = [];
 
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
 var _auth = FirebaseAuth.instance;
 
-Future readData() async {
-  // 과목명 불러오기
-  db.collection('user').doc(uid!).collection('study').snapshots().listen(
-        (QuerySnapshot qs) {
-      qs.docs.forEach((doc) => subjectList.add(doc["subject"]));
-    },
-  );
-  db.collection('user').doc(uid!).collection('study').snapshots().listen((QuerySnapshot qs) {
-    qs.docs.forEach((doc) => docList.add(doc.data()));
-    qs.docs.forEach((doc) => docIDList.add(doc.id));
-    print(docList[0]);
-    print(docList[0]["day"]);
+readStudyData() {
+  db.collection('users').doc(uid!).snapshots().listen((DocumentSnapshot ds) {
+    docList.add(ds.get('study'));
+    print(docList);
+    readScheduleData();
+    readSubjectData();
   });
+}
+
+readScheduleData() {
+  for(int i = 0; i <= docList.length; i++) {
+    db.collection('studyroom').doc(docList[0][i]).collection('schedule').snapshots().listen(
+            (QuerySnapshot qs) {
+          qs.docs.forEach((doc) => scheduleList.add(doc.data()));
+        }
+    );
+  }
+}
+
+readSubjectData() {
+  for (int i = 0; i <= docList.length; i++) {
+    db
+        .collection('studyroom')
+        .doc(docList[0][i])
+        .collection('schedule')
+        .snapshots()
+        .listen((QuerySnapshot qs) {
+      qs.docs.forEach((doc) => subjectList.add(doc['studyName'].toString()));
+      print(docList[0][1]);
+      print(subjectList);
+    });
+  }
 }
 
 class mainPage extends StatefulWidget {
@@ -52,7 +70,7 @@ class mainPage extends StatefulWidget {
 class _mainPageState extends State<mainPage> {
   @override
   initState() {
-    readData();
+    readStudyData();
     super.initState();
     print(docList);
   }
@@ -93,13 +111,15 @@ class _MainPageState extends State<MainPage> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                TextButton(onPressed: (){},
+                TextButton(
+                  onPressed: () {},
                   child: Text(
                     getToday(),
                     style: TextStyle(color: Colors.black),
                   ),
-                  style: TextButton.styleFrom(textStyle: const TextStyle(fontSize: 25)),
-                  ),
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(fontSize: 25)),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -121,32 +141,31 @@ class _MainPageState extends State<MainPage> {
                             children: subjectList.map((e) => Text(e)).toList()),
                       ),
                     ),
-                    Stack( // 타이머 부분
+                    Stack(// 타이머 부분
                         children: [
-                          Container(
-                            padding:
+                      Container(
+                        padding:
                             const EdgeInsets.only(bottom: 15.0, right: 25.0),
-                            alignment: Alignment.bottomRight,
-                            width: 180,
-                            height: 180,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                  30)),
-                            ),
-                            child: Timer(),
-                          ),
-                          // Image.asset(
-                          //     'assets/flower.png', width: 120, height: 120)
-                        ]),
+                        alignment: Alignment.bottomRight,
+                        width: 180,
+                        height: 180,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                        ),
+                        child: Timer(),
+                      ),
+                      // Image.asset(
+                      //     'assets/flower.png', width: 120, height: 120)
+                    ]),
                   ],
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      signOut();
-                      Navigator.of(context).pop(LogIn());
-                    },
-                    child: Text("logout")),
+                // ElevatedButton(
+                //     onPressed: () {
+                //       signOut();
+                //       Navigator.of(context).pop(LogIn());
+                //     },
+                //     child: Text("logout")),
                 Stack(
                   alignment: Alignment.center,
                   children: [
@@ -207,27 +226,24 @@ class _TimeTableState extends State<TimeTable> {
 
   _buildTableEvent1() {
     var isNull = true;
-    for (int i = 0; i < docList.length; i++) {
-      if (docList[i]["day"] == "월") {
+    for (int i = 0; i < scheduleList.length; i++) {
+      if (scheduleList[i]["day"] == "월") {
         isNull = false;
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StudyRoom()));
               },
-              title: docList[i]["subject"].toString(),
+              title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
-                  hour: docList[i]["startHour"],
-                  minute: docList[i]["startMin"]),
+                  hour: scheduleList[i]["startHour"],
+                  minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
+                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
               textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0)
-          ),
+              padding: EdgeInsets.all(3.0)),
         ];
       }
     }
@@ -239,23 +255,21 @@ class _TimeTableState extends State<TimeTable> {
 
   _buildTableEvent2() {
     var isNull = true;
-    for (int i = 0; i < docList.length; i++) {
-      if (docList[i]["day"] == "화") {
+    for (int i = 0; i < scheduleList.length; i++) {
+      if (scheduleList[i]["day"] == "화") {
         isNull = false;
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StudyRoom()));
               },
-              title: docList[i]["subject"].toString(),
+              title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
-                  hour: docList[i]["startHour"],
-                  minute: docList[i]["startMin"]),
+                  hour: scheduleList[i]["startHour"],
+                  minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
+                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
               textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
@@ -270,23 +284,21 @@ class _TimeTableState extends State<TimeTable> {
 
   _buildTableEvent3() {
     var isNull = true;
-    for (int i = 0; i < docList.length; i++) {
-      if (docList[i]["day"] == "수") {
+    for (int i = 0; i < scheduleList.length; i++) {
+      if (scheduleList[i]["day"] == "수") {
         isNull = false;
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StudyRoom()));
               },
-              title: docList[i]["subject"].toString(),
+              title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
-                  hour: docList[i]["startHour"],
-                  minute: docList[i]["startMin"]),
+                  hour: scheduleList[i]["startHour"],
+                  minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
+                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
               textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
@@ -301,23 +313,21 @@ class _TimeTableState extends State<TimeTable> {
 
   _buildTableEvent4() {
     var isNull = true;
-    for (int i = 0; i < docList.length; i++) {
-      if (docList[i]["day"] == "목") {
+    for (int i = 0; i < scheduleList.length; i++) {
+      if (scheduleList[i]["day"] == "목") {
         isNull = false;
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StudyRoom()));
               },
-              title: docList[i]["subject"].toString(),
+              title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
-                  hour: docList[i]["startHour"],
-                  minute: docList[i]["startMin"]),
+                  hour: scheduleList[i]["startHour"],
+                  minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
+                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
               textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
@@ -332,23 +342,21 @@ class _TimeTableState extends State<TimeTable> {
 
   _buildTableEvent5() {
     var isNull = true;
-    for (int i = 0; i < docList.length; i++) {
-      if (docList[i]["day"] == "금") {
+    for (int i = 0; i < scheduleList.length; i++) {
+      if (scheduleList[i]["day"] == "금") {
         isNull = false;
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => StudyRoom())
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StudyRoom()));
               },
-              title: docList[i]["subject"].toString(),
+              title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
-                  hour: docList[i]["startHour"],
-                  minute: docList[i]["startMin"]),
+                  hour: scheduleList[i]["startHour"],
+                  minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: docList[i]["endHour"], minute: docList[i]["endMin"]),
+                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
               decoration: BoxDecoration(color: Colors.blue),
               textStyle: TextStyle(fontSize: 13),
               padding: EdgeInsets.all(3.0))
