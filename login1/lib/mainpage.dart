@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'package:login1/showStudyRoom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:login1/loginpage.dart';
+// import 'package:login1/loginpage.dart';
 
 import 'timer.dart';
 
@@ -36,12 +36,15 @@ readStudyData() {
 }
 
 readScheduleData() {
-  for(int i = 0; i <= docList.length; i++) {
-    db.collection('studyroom').doc(docList[0][i]).collection('schedule').snapshots().listen(
-            (QuerySnapshot qs) {
-          qs.docs.forEach((doc) => scheduleList.add(doc.data()));
-        }
-    );
+  for (int i = 0; i <= docList.length; i++) {
+    db
+        .collection('studyroom')
+        .doc(docList[0][i])
+        .collection('schedule')
+        .snapshots()
+        .listen((QuerySnapshot qs) {
+      qs.docs.forEach((doc) => scheduleList.add(doc.data()));
+    });
   }
 }
 
@@ -106,7 +109,7 @@ class _MainPageState extends State<MainPage> {
           stream: db.collection(uid!).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             }
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -173,7 +176,7 @@ class _MainPageState extends State<MainPage> {
                       // 시간표
                       width: 377.1,
                       height: 330,
-                      padding: EdgeInsets.all(5.7),
+                      padding: const EdgeInsets.all(5.7),
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20.0)),
@@ -205,7 +208,7 @@ class _TimeTableState extends State<TimeTable> {
         stream: db.collection(uid!).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -232,18 +235,24 @@ class _TimeTableState extends State<TimeTable> {
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => StudyRoom()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyID: docList[0][i],
+                              studyName: scheduleList[i]["studyName"],
+                            )));
               },
               title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
                   hour: scheduleList[i]["startHour"],
                   minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0)),
+                  hour: scheduleList[i]["endHour"],
+                  minute: scheduleList[i]["endMin"]),
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0)),
         ];
       }
     }
@@ -261,18 +270,24 @@ class _TimeTableState extends State<TimeTable> {
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => StudyRoom()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyID: docList[0][i],
+                              studyName: scheduleList[i]["studyName"],
+                            )));
               },
               title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
                   hour: scheduleList[i]["startHour"],
                   minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0))
+                  hour: scheduleList[i]["endHour"],
+                  minute: scheduleList[i]["endMin"]),
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0))
         ];
       }
     }
@@ -290,18 +305,24 @@ class _TimeTableState extends State<TimeTable> {
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => StudyRoom()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyID: docList[0][i],
+                              studyName: scheduleList[i]["studyName"],
+                            )));
               },
               title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
                   hour: scheduleList[i]["startHour"],
                   minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0))
+                  hour: scheduleList[i]["endHour"],
+                  minute: scheduleList[i]["endMin"]),
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0))
         ];
       }
     }
@@ -319,18 +340,24 @@ class _TimeTableState extends State<TimeTable> {
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => StudyRoom()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyID: docList[0][i],
+                              studyName: scheduleList[i]["studyName"],
+                            )));
               },
               title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
                   hour: scheduleList[i]["startHour"],
                   minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0))
+                  hour: scheduleList[i]["endHour"],
+                  minute: scheduleList[i]["endMin"]),
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0))
         ];
       }
     }
@@ -348,18 +375,24 @@ class _TimeTableState extends State<TimeTable> {
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => StudyRoom()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyID: docList[0][i],
+                              studyName: scheduleList[i]["studyName"],
+                            )));
               },
               title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
                   hour: scheduleList[i]["startHour"],
                   minute: scheduleList[i]["startMin"]),
               end: TableEventTime(
-                  hour: scheduleList[i]["endHour"], minute: scheduleList[i]["endMin"]),
-              decoration: BoxDecoration(color: Colors.blue),
-              textStyle: TextStyle(fontSize: 13),
-              padding: EdgeInsets.all(3.0))
+                  hour: scheduleList[i]["endHour"],
+                  minute: scheduleList[i]["endMin"]),
+              decoration: const BoxDecoration(color: Colors.blue),
+              textStyle: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.all(3.0))
         ];
       }
     }
@@ -373,33 +406,33 @@ class _TimeTableState extends State<TimeTable> {
     return [
       LaneEvents(
           lane: Lane(
-              name: '월', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '월', width: 60, textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent1()),
       LaneEvents(
           lane: Lane(
-              name: '화', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '화', width: 60, textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent2()),
       LaneEvents(
           lane: Lane(
-              name: '수', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '수', width: 60, textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent3()),
       LaneEvents(
           lane: Lane(
-              name: '목', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '목', width: 60, textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent4()),
       LaneEvents(
           lane: Lane(
-              name: '금', width: 60, textStyle: TextStyle(color: Colors.grey)),
+              name: '금', width: 60, textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent5()),
     ];
   }
 }
 
-Future signOut() async {
-  try {
-    return await _auth.signOut();
-  } catch (e) {
-    print('error: $e');
-    return null;
-  }
-}
+// Future signOut() async {
+//   try {
+//     return await _auth.signOut();
+//   } catch (e) {
+//     print('error: $e');
+//     return null;
+//   }
+// }
