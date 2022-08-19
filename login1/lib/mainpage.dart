@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'package:login1/showStudyRoom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:login1/loginpage.dart';
+import 'package:login1/loginpage.dart';
 
 import 'timer.dart';
 
@@ -28,18 +28,23 @@ var _auth = FirebaseAuth.instance;
 
 readStudyData() {
   db.collection('users').doc(uid!).snapshots().listen((DocumentSnapshot ds) {
-    docList.add(ds.get('study'));
-    print(docList);
+    // docList.add(ds.get('study'));
+    List temp = ds.get('study') as List;
+    temp.forEach((element) {
+      docList.add(element);
+    });
+    print('len: ${docList.length}');
+    print('UID: $uid');
     readScheduleData();
     readSubjectData();
   });
 }
 
 readScheduleData() {
-  for (int i = 0; i <= docList.length; i++) {
+  for (int i = 0; i < docList.length; i++) {
     db
         .collection('studyroom')
-        .doc(docList[0][i])
+        .doc(docList[i])
         .collection('schedule')
         .snapshots()
         .listen((QuerySnapshot qs) {
@@ -49,15 +54,14 @@ readScheduleData() {
 }
 
 readSubjectData() {
-  for (int i = 0; i <= docList.length; i++) {
+  for (int i = 0; i < docList.length; i++) {
     db
         .collection('studyroom')
-        .doc(docList[0][i])
+        .doc(docList[i])
         .collection('schedule')
         .snapshots()
         .listen((QuerySnapshot qs) {
       qs.docs.forEach((doc) => subjectList.add(doc['studyName'].toString()));
-      print(docList[0][1]);
       print(subjectList);
     });
   }
@@ -73,9 +77,11 @@ class mainPage extends StatefulWidget {
 class _mainPageState extends State<mainPage> {
   @override
   initState() {
-    readStudyData();
     super.initState();
+    readStudyData();
     print(docList);
+    setState(() {});
+    // setState(() {});
   }
 
   Widget build(BuildContext context) {
@@ -104,9 +110,88 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(27.0),
+        child: AppBar(
+          title: const Text(' '),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          // 앱바 투명
+          elevation: 0.0,
+          actions: [
+            Builder(
+              // Drawer 아이콘 색 지정 위해 Builder 위젯 사용
+              builder: (context) => IconButton(
+                icon: const Icon(
+                  Icons.menu,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openEndDrawer(); // Drawer 열음
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const UserAccountsDrawerHeader(
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage('assets/boo.png'),
+              ),
+              accountName: Text('BOO'),
+              accountEmail: Text('boo@hufs.ac.kr'),
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xffe5cdde), Color(0xff9b7fc1)],
+                  ),
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(40.0),
+                      bottomLeft: Radius.circular(40.0))),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.account_circle,
+                color: Colors.grey[850],
+              ),
+              title: const Text('계정 정보'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.people,
+                color: Colors.grey[850],
+              ),
+              title: const Text('스터디 게시판'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.mail,
+                color: Colors.grey[850],
+              ),
+              title: const Text('문의하기'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.book,
+                color: Colors.grey[850],
+              ),
+              title: const Text('자주하는 질문(가이드)'),
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
       backgroundColor: Colors.transparent,
-      body: StreamBuilder<QuerySnapshot>(
-          stream: db.collection(uid!).snapshots(),
+      body: StreamBuilder<DocumentSnapshot>(
+          stream: db.collection('users').doc(uid!).snapshots().asBroadcastStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -141,7 +226,14 @@ class _MainPageState extends State<MainPage> {
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: subjectList.map((e) => Text(e)).toList()),
+                            children: subjectList
+                                .map((e) => Text(
+                                      e,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20),
+                                    ))
+                                .toList()),
                       ),
                     ),
                     Stack(// 타이머 부분
@@ -204,13 +296,20 @@ class TimeTable extends StatefulWidget {
 class _TimeTableState extends State<TimeTable> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: db.collection(uid!).snapshots(),
+    return StreamBuilder<DocumentSnapshot>(
+        stream: db.collection('users').doc(uid!).snapshots().asBroadcastStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          }
+          if (!snapshot.hasData) {
+            return Center(
+                child: const Text(
+              '등록된 스터디가 없습니다.',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+            ));
           }
           return TimetableView(
             laneEventsList: _buildLaneEvents(),
@@ -406,33 +505,43 @@ class _TimeTableState extends State<TimeTable> {
     return [
       LaneEvents(
           lane: Lane(
-              name: '월', width: 60, textStyle: const TextStyle(color: Colors.grey)),
+              name: '월',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent1()),
       LaneEvents(
           lane: Lane(
-              name: '화', width: 60, textStyle: const TextStyle(color: Colors.grey)),
+              name: '화',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent2()),
       LaneEvents(
           lane: Lane(
-              name: '수', width: 60, textStyle: const TextStyle(color: Colors.grey)),
+              name: '수',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent3()),
       LaneEvents(
           lane: Lane(
-              name: '목', width: 60, textStyle: const TextStyle(color: Colors.grey)),
+              name: '목',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent4()),
       LaneEvents(
           lane: Lane(
-              name: '금', width: 60, textStyle: const TextStyle(color: Colors.grey)),
+              name: '금',
+              width: 60,
+              textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent5()),
     ];
   }
 }
 
-// Future signOut() async {
-//   try {
-//     return await _auth.signOut();
-//   } catch (e) {
-//     print('error: $e');
-//     return null;
-//   }
-// }
+Future signOut() async {
+  try {
+    return await _auth.signOut();
+  } catch (e) {
+    print('error: $e');
+    return null;
+  }
+}
