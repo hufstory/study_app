@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login1/loginpage.dart';
 
 import 'timer.dart';
+import 'dart:math';
 
 import 'package:intl/intl.dart';
 
@@ -81,7 +82,6 @@ class _mainPageState extends State<mainPage> {
     readStudyData();
     print(docList);
     setState(() {});
-    // setState(() {});
   }
 
   Widget build(BuildContext context) {
@@ -191,7 +191,8 @@ class _MainPageState extends State<MainPage> {
       ),
       backgroundColor: Colors.transparent,
       body: StreamBuilder<DocumentSnapshot>(
-          stream: db.collection('users').doc(uid!).snapshots().asBroadcastStream(),
+          stream:
+              db.collection('users').doc(uid!).snapshots().asBroadcastStream(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -297,7 +298,8 @@ class _TimeTableState extends State<TimeTable> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
-        stream: db.collection('users').doc(uid!).snapshots().asBroadcastStream(),
+        stream:
+            db.collection('users').doc(uid!).snapshots().asBroadcastStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -338,7 +340,7 @@ class _TimeTableState extends State<TimeTable> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => StudyRoom(
-                              studyID: docList[0][i],
+                              studyID: docList[i],
                               studyName: scheduleList[i]["studyName"],
                             )));
               },
@@ -349,8 +351,10 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: scheduleList[i]["endHour"],
                   minute: scheduleList[i]["endMin"]),
-              decoration: const BoxDecoration(color: Colors.blue),
-              textStyle: const TextStyle(fontSize: 13),
+              decoration: BoxDecoration(
+                  color: Colors
+                      .primaries[Random().nextInt(Colors.primaries.length)]),
+              textStyle: const TextStyle(fontSize: 12),
               padding: const EdgeInsets.all(3.0)),
         ];
       }
@@ -373,7 +377,7 @@ class _TimeTableState extends State<TimeTable> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => StudyRoom(
-                              studyID: docList[0][i],
+                              studyID: docList[i],
                               studyName: scheduleList[i]["studyName"],
                             )));
               },
@@ -384,8 +388,10 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: scheduleList[i]["endHour"],
                   minute: scheduleList[i]["endMin"]),
-              decoration: const BoxDecoration(color: Colors.blue),
-              textStyle: const TextStyle(fontSize: 13),
+              decoration: BoxDecoration(
+                  color: Colors
+                      .primaries[Random().nextInt(Colors.primaries.length)]),
+              textStyle: const TextStyle(fontSize: 12),
               padding: const EdgeInsets.all(3.0))
         ];
       }
@@ -408,7 +414,7 @@ class _TimeTableState extends State<TimeTable> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => StudyRoom(
-                              studyID: docList[0][i],
+                              studyID: docList[i],
                               studyName: scheduleList[i]["studyName"],
                             )));
               },
@@ -419,8 +425,10 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: scheduleList[i]["endHour"],
                   minute: scheduleList[i]["endMin"]),
-              decoration: const BoxDecoration(color: Colors.blue),
-              textStyle: const TextStyle(fontSize: 13),
+              decoration: BoxDecoration(
+                  color: Colors
+                      .primaries[Random().nextInt(Colors.primaries.length)]),
+              textStyle: const TextStyle(fontSize: 12),
               padding: const EdgeInsets.all(3.0))
         ];
       }
@@ -443,7 +451,7 @@ class _TimeTableState extends State<TimeTable> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => StudyRoom(
-                              studyID: docList[0][i],
+                              studyID: docList[i],
                               studyName: scheduleList[i]["studyName"],
                             )));
               },
@@ -454,8 +462,10 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: scheduleList[i]["endHour"],
                   minute: scheduleList[i]["endMin"]),
-              decoration: const BoxDecoration(color: Colors.blue),
-              textStyle: const TextStyle(fontSize: 13),
+              decoration: BoxDecoration(
+                  color: Colors
+                      .primaries[Random().nextInt(Colors.primaries.length)]),
+              textStyle: const TextStyle(fontSize: 12),
               padding: const EdgeInsets.all(3.0))
         ];
       }
@@ -478,7 +488,7 @@ class _TimeTableState extends State<TimeTable> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => StudyRoom(
-                              studyID: docList[0][i],
+                              studyID: docList[i],
                               studyName: scheduleList[i]["studyName"],
                             )));
               },
@@ -489,8 +499,10 @@ class _TimeTableState extends State<TimeTable> {
               end: TableEventTime(
                   hour: scheduleList[i]["endHour"],
                   minute: scheduleList[i]["endMin"]),
-              decoration: const BoxDecoration(color: Colors.blue),
-              textStyle: const TextStyle(fontSize: 13),
+              decoration: BoxDecoration(
+                  color: Colors
+                      .primaries[Random().nextInt(Colors.primaries.length)]),
+              textStyle: const TextStyle(fontSize: 12),
               padding: const EdgeInsets.all(3.0))
         ];
       }

@@ -33,7 +33,6 @@ class _homepageState extends State<homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Center(
         child: _widgetOptions
             .elementAt(_selectedIndex), //위의 widgetOptions에서 선택된 index별로 보여줌
