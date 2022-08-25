@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,10 +20,15 @@ String getToday() {
   return strToday;
 }
 
+
 FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List docList = [];
 List scheduleList = [];
+bool isDone = false;
+StreamController streamController = StreamController<bool>(onListen: (){
+  isDone = false;
+});
 
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
@@ -76,13 +83,13 @@ class mainPage extends StatefulWidget {
 }
 
 class _mainPageState extends State<mainPage> {
+
   @override
   initState() {
-    super.initState();
     readStudyData();
-    print(docList);
-    setState(() {});
+    super.initState();
   }
+
 
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
@@ -111,7 +118,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(27.0),
+        preferredSize: const Size.fromHeight(27.0),
         child: AppBar(
           title: const Text(' '),
           centerTitle: true,
@@ -190,97 +197,91 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       backgroundColor: Colors.transparent,
-      body: StreamBuilder<DocumentSnapshot>(
-          stream:
-              db.collection('users').doc(uid!).snapshots().asBroadcastStream(),
+      body: FutureBuilder(
+          future: Future.delayed(Duration(milliseconds: 500)),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    getToday(),
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  style: TextButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 25)),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      // 스터디 목록 부분
-                      width: 180,
-                      height: 180,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                        image: DecorationImage(
-                          image: AssetImage('assets/grass.png'),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: subjectList
-                                .map((e) => Text(
-                                      e,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20),
-                                    ))
-                                .toList()),
-                      ),
+            else {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      getToday(),
+                      style: TextStyle(color: Colors.black),
                     ),
-                    Stack(// 타이머 부분
-                        children: [
+                    style: TextButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 25)),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
                       Container(
-                        padding:
-                            const EdgeInsets.only(bottom: 15.0, right: 25.0),
-                        alignment: Alignment.bottomRight,
+                        // 스터디 목록 부분
                         width: 180,
                         height: 180,
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(30)),
+                          image: DecorationImage(
+                            image: AssetImage('assets/grass.png'),
+                          ),
                         ),
-                        child: Timer(),
+                        child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: subjectList.map((e) => Text(e, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),)).toList()),
+                        ),
                       ),
-                      // Image.asset(
-                      //     'assets/flower.png', width: 120, height: 120)
-                    ]),
-                  ],
-                ),
-                // ElevatedButton(
-                //     onPressed: () {
-                //       signOut();
-                //       Navigator.of(context).pop(LogIn());
-                //     },
-                //     child: Text("logout")),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      // 시간표
-                      width: 377.1,
-                      height: 330,
-                      padding: const EdgeInsets.all(5.7),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20.0)),
-                      child: TimeTable(
-                        subjectList1: [...subjectList],
+                      Stack(// 타이머 부분
+                          children: [
+                            Container(
+                              padding:
+                              const EdgeInsets.only(bottom: 15.0, right: 25.0),
+                              alignment: Alignment.bottomRight,
+                              width: 180,
+                              height: 180,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(Radius.circular(30)),
+                              ),
+                              child: Timer(),
+                            ),
+                            // Image.asset(
+                            //     'assets/flower.png', width: 120, height: 120)
+                          ]),
+                    ],
+                  ),
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       signOut();
+                  //       Navigator.of(context).pop(LogIn());
+                  //     },
+                  //     child: Text("logout")),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        // 시간표
+                        width: 377.1,
+                        height: 330,
+                        padding: const EdgeInsets.all(5.7),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.0)),
+                        child: TimeTable(
+                          subjectList1: [...subjectList],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            );
+                    ],
+                  ),
+                ],
+              );
+            }
           }),
     );
   }
@@ -298,17 +299,16 @@ class _TimeTableState extends State<TimeTable> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
-        stream:
-            db.collection('users').doc(uid!).snapshots().asBroadcastStream(),
+        stream: db.collection('users').doc(uid!).snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return const Center(
+          //     child: CircularProgressIndicator(),
+          //   );
+          // }
           if (!snapshot.hasData) {
-            return Center(
-                child: const Text(
+            return const Center(
+                child: Text(
               '등록된 스터디가 없습니다.',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
             ));
@@ -354,7 +354,7 @@ class _TimeTableState extends State<TimeTable> {
               decoration: BoxDecoration(
                   color: Colors
                       .primaries[Random().nextInt(Colors.primaries.length)]),
-              textStyle: const TextStyle(fontSize: 12),
+              textStyle: const TextStyle(fontSize: 12, color: Colors.white),
               padding: const EdgeInsets.all(3.0)),
         ];
       }
@@ -391,7 +391,7 @@ class _TimeTableState extends State<TimeTable> {
               decoration: BoxDecoration(
                   color: Colors
                       .primaries[Random().nextInt(Colors.primaries.length)]),
-              textStyle: const TextStyle(fontSize: 12),
+              textStyle: const TextStyle(fontSize: 12, color: Colors.white),
               padding: const EdgeInsets.all(3.0))
         ];
       }
@@ -428,7 +428,7 @@ class _TimeTableState extends State<TimeTable> {
               decoration: BoxDecoration(
                   color: Colors
                       .primaries[Random().nextInt(Colors.primaries.length)]),
-              textStyle: const TextStyle(fontSize: 12),
+              textStyle: const TextStyle(fontSize: 12, color: Colors.white),
               padding: const EdgeInsets.all(3.0))
         ];
       }
@@ -465,7 +465,7 @@ class _TimeTableState extends State<TimeTable> {
               decoration: BoxDecoration(
                   color: Colors
                       .primaries[Random().nextInt(Colors.primaries.length)]),
-              textStyle: const TextStyle(fontSize: 12),
+              textStyle: const TextStyle(fontSize: 12, color: Colors.white),
               padding: const EdgeInsets.all(3.0))
         ];
       }
@@ -502,7 +502,7 @@ class _TimeTableState extends State<TimeTable> {
               decoration: BoxDecoration(
                   color: Colors
                       .primaries[Random().nextInt(Colors.primaries.length)]),
-              textStyle: const TextStyle(fontSize: 12),
+              textStyle: const TextStyle(fontSize: 12, color: Colors.white),
               padding: const EdgeInsets.all(3.0))
         ];
       }
