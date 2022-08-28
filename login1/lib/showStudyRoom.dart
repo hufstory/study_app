@@ -39,6 +39,70 @@ class _StudyRoomState extends State<StudyRoom> {
     });
   }
 
+  void showAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: const Color(0xFFD9D9D9),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)
+            ),
+            contentPadding: const EdgeInsets.fromLTRB(20, 25, 20, 20),
+            content: Container(
+              width: 380,
+              height: 200,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    children: const [
+                      Text('공지사항', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),)
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Column(
+                    children: alertList.map((e) => Text(e, style: const TextStyle(fontSize: 17),)).toList(),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void showRuleDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: const Color(0xFFD9D9D9),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)
+            ),
+            contentPadding: const EdgeInsets.fromLTRB(20, 25, 20, 20),
+            content: Container(
+              width: 380,
+              height: 200,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    children: const [
+                      Text('스터디룸 규칙', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),)
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Column(
+                    children: ruleList.map((e) => Text(e, style: const TextStyle(fontSize: 17),)).toList(),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   initState() {
     readData();
@@ -50,7 +114,7 @@ class _StudyRoomState extends State<StudyRoom> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.delayed(const Duration(milliseconds: 200)),
+        future: Future.delayed(const Duration(milliseconds: 400)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -164,13 +228,14 @@ class _StudyRoomState extends State<StudyRoom> {
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold),
                               children: [
-                                TextSpan(
-                                    text: '\n${widget.studyName} 스터디룸에 오신 것을 환영합니다.',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17))
-                              ])),
+                            TextSpan(
+                                text:
+                                    '\n${widget.studyName} 스터디룸에 오신 것을 환영합니다.',
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17))
+                          ])),
                       Container(
                         padding: const EdgeInsets.only(top: 10.0),
                         width: MediaQuery.of(context).size.width,
@@ -181,7 +246,8 @@ class _StudyRoomState extends State<StudyRoom> {
                         child: const Text(
                           '링크 부분',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.bold),
                         ),
                       ),
                       Container(
@@ -212,7 +278,8 @@ class _StudyRoomState extends State<StudyRoom> {
                                       primary: const Color(0xFFD9D9D9),
                                       fixedSize: const Size(55, 55),
                                       shape: const CircleBorder()),
-                                  child: const Text('📝', style: TextStyle(fontSize: 24)),
+                                  child: const Text('📝',
+                                      style: TextStyle(fontSize: 24)),
                                 ),
                                 ElevatedButton(
                                   onPressed: () {},
@@ -220,7 +287,8 @@ class _StudyRoomState extends State<StudyRoom> {
                                       primary: const Color(0xFFD9D9D9),
                                       fixedSize: const Size(55, 55),
                                       shape: const CircleBorder()),
-                                  child: const Text('👋🏻', style: TextStyle(fontSize: 25)),
+                                  child: const Text('👋🏻',
+                                      style: TextStyle(fontSize: 25)),
                                 ),
                               ],
                             ),
@@ -260,53 +328,61 @@ class _StudyRoomState extends State<StudyRoom> {
                               fontSize: 17,
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
-                      Container(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          width: MediaQuery.of(context).size.width,
-                          height: 63,
-                          decoration: BoxDecoration(
-                              color: const Color(0xFFD9D9D9),
-                              borderRadius: BorderRadius.circular(5.0)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: alertList
-                                  .map((e) => Text(e,
-                                  style:
-                                  const TextStyle(color: Colors.black, fontSize: 17)))
-                                  .toList(),
-                            ),
-                          )),
+                      GestureDetector(
+                        onTap: () {
+                          showAlertDialog();
+                        },
+                        child: Container(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            width: MediaQuery.of(context).size.width,
+                            height: 63,
+                            decoration: BoxDecoration(
+                                color: const Color(0xFFD9D9D9),
+                                borderRadius: BorderRadius.circular(5.0)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: alertList
+                                    .map((e) => Text(e,
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 17)))
+                                    .toList(),
+                              ),
+                            )),
+                      ),
                       const Text('스터디룸 규칙',
                           style: TextStyle(
                               fontSize: 17,
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
-                      Container(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          width: MediaQuery.of(context).size.width,
-                          height: 63,
-                          decoration: BoxDecoration(
-                              color: const Color(0xFFD9D9D9),
-                              borderRadius: BorderRadius.circular(5.0)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: ruleList
-                                  .map((e) => Text(e,
-                                  style:
-                                  const TextStyle(color: Colors.black, fontSize: 17)))
-                                  .toList(),
-                            ),
-                          )
+                      GestureDetector(
+                        onTap: (){
+                          showRuleDialog();
+                        },
+                        child: Container(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            width: MediaQuery.of(context).size.width,
+                            height: 63,
+                            decoration: BoxDecoration(
+                                color: const Color(0xFFD9D9D9),
+                                borderRadius: BorderRadius.circular(5.0)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: ruleList
+                                    .map((e) => Text(e,
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 17)))
+                                    .toList(),
+                              ),
+                            )),
                       ),
                     ],
                   ),
                 ));
           }
-      }
-    );
+        });
   }
 }

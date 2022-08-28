@@ -198,7 +198,7 @@ class _MainPageState extends State<MainPage> {
       ),
       backgroundColor: Colors.transparent,
       body: FutureBuilder(
-          future: Future.delayed(Duration(milliseconds: 200)),
+          future: Future.delayed(Duration(milliseconds: 400)),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
