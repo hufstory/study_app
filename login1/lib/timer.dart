@@ -97,6 +97,9 @@ class _TimerState extends State<Timer> {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 30,
+              ),
               ElevatedButton(
                 onPressed: (){
                   if(goStop == false){
@@ -107,7 +110,7 @@ class _TimerState extends State<Timer> {
                   }
                   print(goStop);
                 },
-                child: Text('Elevated Button'),
+                child: Text('시작 / 종료'),
               )
             ],
           );

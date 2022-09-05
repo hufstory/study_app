@@ -33,7 +33,7 @@ StreamController streamController = StreamController<bool>(onListen: (){
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
 var _auth = FirebaseAuth.instance;
-
+String email = FirebaseAuth.instance.currentUser!.email.toString();
 readStudyData() {
   db.collection('users').doc(uid!).snapshots().listen((DocumentSnapshot ds) {
     // docList.add(ds.get('study'));
@@ -150,7 +150,7 @@ class _MainPageState extends State<MainPage> {
                 backgroundImage: AssetImage('assets/boo.png'),
               ),
               accountName: Text('BOO'),
-              accountEmail: Text('boo@hufs.ac.kr'),
+              accountEmail: Text(''),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -241,7 +241,7 @@ class _MainPageState extends State<MainPage> {
                           children: [
                             Container(
                               padding:
-                              const EdgeInsets.only(bottom: 15.0, right: 25.0),
+                                EdgeInsets.only(top: 40.0, bottom: 15.0, right: 40.0),
                               alignment: Alignment.bottomRight,
                               width: 180,
                               height: 180,

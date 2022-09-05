@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:login1/SignUpPage.dart';
 import 'package:login1/mainpage.dart';
 import 'firebase_options.dart';
 
@@ -150,7 +151,7 @@ class _LogInState extends State<LogIn> {
                                   mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween,
                                   children: [
-                                    FlatButton(
+                                    TextButton(
                                         onPressed: () {},
                                         child: Text(
                                           'Forgot password',
@@ -159,43 +160,11 @@ class _LogInState extends State<LogIn> {
                                               fontWeight: FontWeight.normal,
                                               color: Colors.grey),
                                         )),
-                                    FlatButton(
+                                    TextButton(
                                         onPressed: () async {
-                                          _tryValidation();
-                                          try {
-                                            final newUser = await _authentication
-                                                .createUserWithEmailAndPassword(
-                                              email: Email,
-                                              password: PW,
-                                            );
-                                            if(newUser.user == null) {
-                                              print('계정 등록 실패');
-                                              return;
-                                            }
-                                            db.collection('user').doc(uid!).collection('study').add({
-                                              'subject' : 'test',
-                                              'day' : '월',
-                                              'startHour' : 9,
-                                              'startMin' : 30,
-                                              'endHour' : 11,
-                                              'endMin' : 20
-                                            });
-                                            // FirebaseFirestore.instance.collection('users').add({
-                                            //   'Email': Email,
-                                            //   'Nickname': Nickname,
-                                            //   'studyTime': 0,
-                                            //   'participatingStudyGroup': [],
-                                            // });
-                                          } catch(err) {
-                                            print(err);
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content:
-                                                  Text('이메일과 암호가 올바른 형식인지 확인해 주세요'),
-                                                  backgroundColor: Colors.blue,
-                                                )
-                                            );
-                                          }
+                                          Navigator.push(context,
+                                          MaterialPageRoute(builder:
+                                          (context) => signUpPage()));
                                         },
                                         child: Text(
                                           'Sign up',
