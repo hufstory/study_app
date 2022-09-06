@@ -34,6 +34,7 @@ var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
 var _auth = FirebaseAuth.instance;
 String email = FirebaseAuth.instance.currentUser!.email.toString();
+
 readStudyData() {
   db.collection('users').doc(uid!).snapshots().listen((DocumentSnapshot ds) {
     // docList.add(ds.get('study'));
@@ -88,6 +89,8 @@ class _mainPageState extends State<mainPage> {
   initState() {
     readStudyData();
     super.initState();
+    print(user);
+    print(user!.email);
   }
 
 
@@ -114,6 +117,14 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  String? Email = "example.com";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Email = user!.email;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

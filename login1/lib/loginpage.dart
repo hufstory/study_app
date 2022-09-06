@@ -161,7 +161,7 @@ class _LogInState extends State<LogIn> {
                                               color: Colors.grey),
                                         )),
                                     TextButton(
-                                        onPressed: () async {
+                                        onPressed: () {
                                           Navigator.push(context,
                                           MaterialPageRoute(builder:
                                           (context) => signUpPage()));

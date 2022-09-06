@@ -169,7 +169,7 @@ class _signUpPageState extends State<signUpPage> {
                                           //       'endHour': 11,
                                           //       'endMin': 20
                                           //     });
-                                          FirebaseFirestore.instance.collection('users').add({
+                                          FirebaseFirestore.instance.collection('users').doc('${newUser.user!.uid}').set({
                                             'Email': Email.text,
                                             'Nickname': NickName.text,
                                             'Name': Name.text,

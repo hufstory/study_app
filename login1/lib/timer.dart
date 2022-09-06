@@ -24,6 +24,7 @@ void studyTimer() {
       }
   );
   print("time: ${time}");
+  print(uid);
 }
 
 // var time1= 0;
