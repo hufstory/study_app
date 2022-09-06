@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login1/mainpage.dart';
+import 'package:login1/statistics.dart';
 
 class homepage extends StatefulWidget {
   const homepage({Key? key}) : super(key: key);
@@ -13,15 +14,9 @@ class _homepageState extends State<homepage> {
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: 통게',
-      style: optionStyle,
-    ),
+    statistics(),
     mainPage(), //메인페이지
-    Text(
-      'Index 2: 더보기',
-      style: optionStyle,
-    ),
+    Text('더보기')
   ];
 
   void _onItemTapped(int index) {
