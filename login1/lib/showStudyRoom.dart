@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+import 'package:login1/ChatRoom.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -114,7 +116,7 @@ class _StudyRoomState extends State<StudyRoom> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.delayed(const Duration(milliseconds: 400)),
+        future: Future.delayed(const Duration(milliseconds: 500)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -282,7 +284,9 @@ class _StudyRoomState extends State<StudyRoom> {
                                       style: TextStyle(fontSize: 24)),
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatRoom(name: widget.studyName)));
+                                  },
                                   style: ElevatedButton.styleFrom(
                                       primary: const Color(0xFFD9D9D9),
                                       fixedSize: const Size(55, 55),

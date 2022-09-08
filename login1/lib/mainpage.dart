@@ -25,10 +25,6 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List docList = [];
 List scheduleList = [];
-bool isDone = false;
-StreamController streamController = StreamController<bool>(onListen: (){
-  isDone = false;
-});
 
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
@@ -36,9 +32,8 @@ var _auth = FirebaseAuth.instance;
 String email = FirebaseAuth.instance.currentUser!.email.toString();
 
 readStudyData() {
-  db.collection('users').doc(uid!).snapshots().listen((DocumentSnapshot ds) {
-    // docList.add(ds.get('study'));
-    List temp = ds.get('study') as List;
+  db.collection('users').doc('S3XaIk9T8kMIzaumoxbk').snapshots().listen((DocumentSnapshot ds) {
+    List temp = ds.get('participatingStudyGroup') as List;
     temp.forEach((element) {
       docList.add(element);
     });
@@ -209,7 +204,7 @@ class _MainPageState extends State<MainPage> {
       ),
       backgroundColor: Colors.transparent,
       body: FutureBuilder(
-          future: Future.delayed(Duration(milliseconds: 400)),
+          future: Future.delayed(Duration(milliseconds: 800)),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -384,13 +379,8 @@ class _TimeTableState extends State<TimeTable> {
         return [
           TableEvent(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => StudyRoom(
-                              studyID: docList[i],
-                              studyName: scheduleList[i]["studyName"],
-                            )));
+                Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => StudyRoom(studyID: docList[i],
+                  studyName: scheduleList[i]["studyName"],)));
               },
               title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
