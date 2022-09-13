@@ -32,7 +32,7 @@ var _auth = FirebaseAuth.instance;
 String email = FirebaseAuth.instance.currentUser!.email.toString();
 
 readStudyData() {
-  db.collection('users').doc('S3XaIk9T8kMIzaumoxbk').snapshots().listen((DocumentSnapshot ds) {
+  db.collection('users').doc(uid!).snapshots().listen((DocumentSnapshot ds) {
     List temp = ds.get('participatingStudyGroup') as List;
     temp.forEach((element) {
       docList.add(element);

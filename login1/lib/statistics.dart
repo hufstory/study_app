@@ -20,7 +20,7 @@ class _statisticsState extends State<statistics> {
     final end = dateRange.end;
 
     return Scaffold(
-        backgroundColor: Color.fromARGB(239, 230, 230, 230),
+        backgroundColor: const Color.fromARGB(239, 230, 230, 230),
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: SingleChildScrollView(
@@ -29,19 +29,19 @@ class _statisticsState extends State<statistics> {
             children: [
               TextButton(
                 style: TextButton.styleFrom(
-                  textStyle: TextStyle(fontSize: 18),
+                  textStyle: const TextStyle(fontSize: 18),
                   primary: Colors.black,
                 ),
                 onPressed: (){
                   //Navigator.pop(context);
                 },
-                child: Text('Back'),
+                child: const Text('Back'),
               ),
-              SizedBox(height: 30,),
+              const SizedBox(height: 30),
 
               Container(//달력 부분
                 decoration: BoxDecoration(
-                  color:Color.fromARGB(239, 217, 217, 217),
+                  color: const Color.fromARGB(239, 217, 217, 217),
                   borderRadius: BorderRadius.circular(20)
                 ),
                 child: TableCalendar(
@@ -49,19 +49,19 @@ class _statisticsState extends State<statistics> {
                   focusedDay: DateTime.now(),
                   firstDay: DateTime(1999,01,01), //사용자가 접근할 수 있는 첫 번째 날짜
                   lastDay: DateTime(9999,12,31),
-                  headerStyle: HeaderStyle(
+                  headerStyle: const HeaderStyle(
                     titleCentered: true,
                     formatButtonVisible: false,
-                    titleTextStyle: const TextStyle(
+                    titleTextStyle: TextStyle(
                       fontSize: 20.0,
                       color: Colors.black,
                     ),
-                    headerPadding: const EdgeInsets.symmetric(vertical: 4.0),
-                    leftChevronIcon: const Icon(
+                    headerPadding: EdgeInsets.symmetric(vertical: 4.0),
+                    leftChevronIcon: Icon(
                       Icons.arrow_left,
                       size: 40.0,
                     ),
-                    rightChevronIcon: const Icon(
+                    rightChevronIcon: Icon(
                       Icons.arrow_right,
                       size: 40.0,
                     ),
@@ -69,12 +69,12 @@ class _statisticsState extends State<statistics> {
                 ),
               ),
 
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                    color:Color.fromARGB(239, 217, 217, 217),
+                    color: const Color.fromARGB(239, 217, 217, 217),
                     borderRadius: BorderRadius.circular(10)),
                 child: TextButton(
                     child: Text('${start.year}.${start.month}.${start.day} ~ ${end.year}.${end.month}.${end.day}',
@@ -86,14 +86,14 @@ class _statisticsState extends State<statistics> {
                   onPressed: pickDateRange,
                 )
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 108, 141, 255),
+                  primary: const Color.fromARGB(255, 108, 141, 255),
                   onPrimary: Colors.black,
                 ),
 
-                child: Text('Search'),
+                child: const Text('Search'),
                 onPressed: (){
                 }
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:login1/ChatRoom.dart';
+import 'package:login1/QuestionPage.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -264,7 +265,9 @@ class _StudyRoomState extends State<StudyRoom> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionPage()));
+                                  },
                                   style: ElevatedButton.styleFrom(
                                       primary: const Color(0xFFD9D9D9),
                                       fixedSize: const Size(55, 55),
