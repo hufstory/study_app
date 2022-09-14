@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:login1/bar_chart.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class statistics extends StatefulWidget {
   const statistics({Key? key}) : super(key: key);
@@ -10,14 +13,18 @@ class statistics extends StatefulWidget {
 }
 
 class _statisticsState extends State<statistics> {
+  DateFormat formatter = DateFormat('yyyy-MM-dd');
+  DateFormat month_dayFormatter = DateFormat('M/d');
   DateTimeRange dateRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+  List<int> studyTimes = [];
+  List<String> studyDates = [];
 
   get data => null;
 
   @override
   Widget build(BuildContext context) {
-    final start = dateRange.start;
-    final end = dateRange.end;
+    final start = formatter.format(dateRange.start);
+    final end = formatter.format(dateRange.end);
 
     return Scaffold(
         backgroundColor: const Color.fromARGB(239, 230, 230, 230),
@@ -33,7 +40,7 @@ class _statisticsState extends State<statistics> {
                   primary: Colors.black,
                 ),
                 onPressed: (){
-                  //Navigator.pop(context);
+                  Navigator.pop(context);
                 },
                 child: const Text('Back'),
               ),
@@ -77,7 +84,7 @@ class _statisticsState extends State<statistics> {
                     color: const Color.fromARGB(239, 217, 217, 217),
                     borderRadius: BorderRadius.circular(10)),
                 child: TextButton(
-                    child: Text('${start.year}.${start.month}.${start.day} ~ ${end.year}.${end.month}.${end.day}',
+                    child: Text('${start} ~ ${end}',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20.0
@@ -94,9 +101,59 @@ class _statisticsState extends State<statistics> {
                 ),
 
                 child: const Text('Search'),
-                onPressed: (){
+                onPressed: () async {
+                  studyDates = [];
+                  studyTimes = [];
+                  
+                  final uid = FirebaseAuth.instance.currentUser!.uid;
+                  List<String> dates = [];
+                  int duration = dateRange.duration.inHours;
+                  
+                  while(duration >= 0) {
+                    dates.add(formatter.format(dateRange.end.subtract(new Duration(hours: duration))));
+                    studyDates.add(month_dayFormatter.format(dateRange.end.subtract(new Duration(hours: duration))));
+                    duration -= 24;
+                  }
+
+                  List<int> times = [];
+                  for(int i = 0; i < dates.length; i++) {
+                    await FirebaseFirestore.instance.collection('users').doc(uid).collection('studyTime').doc(dates[i]).get().then(
+                        (doc) => {
+                          if(doc.data() != null) {times.add(doc.data()!['studyTime'])}
+                          else{times.add(0)}
+                        }
+                    );
+                  }
+                  studyTimes = times;
+                  print(studyDates);
+                  print(studyTimes);
                 }
               ),
+              // Container(
+              //   child: Column(
+              //     children: [
+              //       SizedBox(
+              //         height: 40.0,
+              //       ),
+              //       Container(
+              //         color: Colors.black,
+              //         margin: EdgeInsets.symmetric(vertical: 20.0),
+              //         child: SingleChildScrollView(
+              //             scrollDirection: Axis.horizontal,
+              //             child: Container(
+              //               child: CustomPaint(
+              //                 size: Size(300, 300),
+              //                 foregroundPainter: BarChart(
+              //                   data: studyTimes,
+              //                   labels: studyDates,
+              //                 ),
+              //               ),
+              //             )
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -116,4 +173,5 @@ class _statisticsState extends State<statistics> {
     setState(() => dateRange = newDateRange);
   }
 }
+
 
