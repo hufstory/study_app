@@ -16,10 +16,18 @@ class _MessageFormState extends State<MessageForm> {
 
   _onEmojiSelected(Emoji emoji) {
     print('_onEmojiSelected: ${emoji.emoji}');
+    setState(() {
+      _userEnterMessage = emoji.emoji;
+    });
   }
 
   _onBackspacePressed() {
     print('_onBackspacePressed');
+    if (_controller.text.isEmpty) {
+      setState(() {
+        _userEnterMessage = '';
+      });
+    }
   }
 
   var _userEnterMessage = '';
@@ -67,6 +75,11 @@ class _MessageFormState extends State<MessageForm> {
                     SizedBox(
                       width: 210,
                       child: TextField(
+                        onTap: (){
+                          setState(() {
+                            emojiShowing = false;
+                          });
+                        },
                         controller: _controller,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
@@ -110,11 +123,11 @@ class _MessageFormState extends State<MessageForm> {
                 ),
               )),
               ElevatedButton(
-                onPressed: _userEnterMessage.isEmpty ? null : () {},
+                onPressed: _controller.text.isEmpty ? null : () {},
                 style: ElevatedButton.styleFrom(
                     primary: Colors.blueAccent,
                     shape: const CircleBorder(),
-                    fixedSize: const Size(40, 40)),
+                    fixedSize: const Size(50, 50)),
                 child: const Icon(Icons.send, color: Colors.white),
               ),
             ],
