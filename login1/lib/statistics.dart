@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:login1/bar_chart.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_charts/flutter_charts.dart';
+
+
 
 class statistics extends StatefulWidget {
   const statistics({Key? key}) : super(key: key);
@@ -28,11 +30,11 @@ class _statisticsState extends State<statistics> {
 
     return Scaffold(
         backgroundColor: const Color.fromARGB(239, 230, 230, 230),
-      body: Padding(
-        padding: const EdgeInsets.all(30.0),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextButton(
                 style: TextButton.styleFrom(
@@ -93,67 +95,61 @@ class _statisticsState extends State<statistics> {
                   onPressed: pickDateRange,
                 )
               ),
+
               const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: const Color.fromARGB(255, 108, 141, 255),
-                  onPrimary: Colors.black,
+
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color.fromARGB(255, 108, 141, 255),
+                    onPrimary: Colors.black,
+                  ),
+
+                  child: const Text('Search'),
+                  onPressed: () async {
+                    studyDates = [];
+                    studyTimes = [];
+
+                    final uid = FirebaseAuth.instance.currentUser!.uid;
+                    List<String> dates = [];
+                    int duration = dateRange.duration.inHours;
+
+                    while(duration >= 0) {
+                      dates.add(formatter.format(dateRange.end.subtract(new Duration(hours: duration))));
+                      studyDates.add(month_dayFormatter.format(dateRange.end.subtract(new Duration(hours: duration))));
+                      duration -= 24;
+                    }
+                    List<int> times = [];
+                    for(int i = 0; i < dates.length; i++) {
+                      await FirebaseFirestore.instance.collection('users').doc(uid).collection('studyTime').doc(dates[i]).get().then(
+                          (doc) => {
+                            if(doc.data() != null) {times.add(doc.data()!['studyTime'])}
+                            else{times.add(0)}
+                          }
+                      );
+                    }
+                    studyTimes = times;
+                    print(studyDates);
+                    print(studyTimes);
+
+                  }
                 ),
-
-                child: const Text('Search'),
-                onPressed: () async {
-                  studyDates = [];
-                  studyTimes = [];
-                  
-                  final uid = FirebaseAuth.instance.currentUser!.uid;
-                  List<String> dates = [];
-                  int duration = dateRange.duration.inHours;
-                  
-                  while(duration >= 0) {
-                    dates.add(formatter.format(dateRange.end.subtract(new Duration(hours: duration))));
-                    studyDates.add(month_dayFormatter.format(dateRange.end.subtract(new Duration(hours: duration))));
-                    duration -= 24;
-                  }
-
-                  List<int> times = [];
-                  for(int i = 0; i < dates.length; i++) {
-                    await FirebaseFirestore.instance.collection('users').doc(uid).collection('studyTime').doc(dates[i]).get().then(
-                        (doc) => {
-                          if(doc.data() != null) {times.add(doc.data()!['studyTime'])}
-                          else{times.add(0)}
-                        }
-                    );
-                  }
-                  studyTimes = times;
-                  print(studyDates);
-                  print(studyTimes);
-                }
               ),
-              // Container(
-              //   child: Column(
-              //     children: [
-              //       SizedBox(
-              //         height: 40.0,
-              //       ),
-              //       Container(
-              //         color: Colors.black,
-              //         margin: EdgeInsets.symmetric(vertical: 20.0),
-              //         child: SingleChildScrollView(
-              //             scrollDirection: Axis.horizontal,
-              //             child: Container(
-              //               child: CustomPaint(
-              //                 size: Size(300, 300),
-              //                 foregroundPainter: BarChart(
-              //                   data: studyTimes,
-              //                   labels: studyDates,
-              //                 ),
-              //               ),
-              //             )
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              const SizedBox(height: 20),
+
+              Container(
+                //alignment: Alignment.center,
+                height: 330.0,
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(child: chartToRun())
+                    ],
+                  )
+                ),
+              ),
             ],
           ),
         ),
@@ -172,6 +168,36 @@ class _statisticsState extends State<statistics> {
 
     setState(() => dateRange = newDateRange);
   }
+}
+Widget chartToRun() {
+  LabelLayoutStrategy? xContainerLabelLayoutStrategy;
+  ChartData chartData;
+  ChartOptions chartOptions = const ChartOptions();
+  // Example with side effects cannot be simply pasted to your code, as the _ExampleSideEffects is private
+  // This example shows the result with sufficient space to show all labels
+  chartData = ChartData(
+    dataRowsColors: const[Colors.blue],
+    dataRows: const [
+      [10.0, 5.0, 13.0, 5.0, 8.0, 9.0]
+    ],
+    xUserLabels: const ['9/1', '9/2', '9/3', '9/4', '9/5', '9/6'],
+    dataRowsLegends: const [
+      '사용 시간',
+    ],
+    chartOptions: chartOptions,
+  );
+  //exampleSideEffects = _ExampleSideEffects()..leftSqueezeText=''.. rightSqueezeText='';
+  var verticalBarChartContainer = VerticalBarChartTopContainer(
+    chartData: chartData,
+    xContainerLabelLayoutStrategy: xContainerLabelLayoutStrategy,
+  );
+
+  var verticalBarChart = VerticalBarChart(
+    painter: VerticalBarChartPainter(
+      verticalBarChartContainer: verticalBarChartContainer,
+    ),
+  );
+  return verticalBarChart;
 }
 
 
