@@ -34,7 +34,7 @@ class _TimerState extends State<Timer> {
   Stream<int> timer(uid) {
     studyTimer();
     return Stream<int>.periodic(
-        Duration(minutes: 1),
+        Duration(seconds: 1),
             (count) {
                 if(goStop==true){
                   return time;
@@ -56,8 +56,9 @@ class _TimerState extends State<Timer> {
         initialData: time,
         stream: timer(uid),
         builder: (context, snapshot) {
-          final hour = (snapshot.data! ~/ 60).toString();
-          final minute = (snapshot.data! % 60).toString();
+          final hour = (snapshot.data! ~/ 3600).toString();
+          final minute = (snapshot.data! ~/ 60).toString();
+          final second = (snapshot.data! % 60).toString();
           return Column(
             children: [
               RichText(
@@ -67,7 +68,7 @@ class _TimerState extends State<Timer> {
                       text: hour,
                       style: TextStyle(
                         color: Color(0xff645E5E),
-                        fontSize: 35,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -75,7 +76,7 @@ class _TimerState extends State<Timer> {
                       text: 'H',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 35,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -83,7 +84,7 @@ class _TimerState extends State<Timer> {
                       text: minute,
                       style: TextStyle(
                         color: Color(0xff645E5E),
-                        fontSize: 35,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -91,17 +92,30 @@ class _TimerState extends State<Timer> {
                       text: 'M',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 35,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: second,
+                      style: TextStyle(
+                        color: Color(0xff645E5E),
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'S',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: 30,
-              ),
-              ElevatedButton(
+              FloatingActionButton(
                 onPressed: (){
                   if(goStop == false){
                     goStop = true;
@@ -111,13 +125,12 @@ class _TimerState extends State<Timer> {
                   }
                   print(goStop);
                 },
-                child: Text('시작 / 종료'),
+                child: Icon(Icons.pause),
               )
             ],
           );
         }
     );
   }
-
 
 }
