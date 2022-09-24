@@ -46,7 +46,7 @@ class _statisticsState extends State<statistics> {
                 },
                 child: const Text('Back'),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
               Container(//달력 부분
                 decoration: BoxDecoration(
@@ -76,9 +76,9 @@ class _statisticsState extends State<statistics> {
                     ),
                   ),
                 ),
-              ),
+              ), //달력
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
               Container(
                 width: double.infinity,
@@ -94,7 +94,7 @@ class _statisticsState extends State<statistics> {
                     ),
                   onPressed: pickDateRange,
                 )
-              ),
+              ), //날짜를 선택할 수 있는 박스
 
               const SizedBox(height: 20),
 
@@ -134,7 +134,8 @@ class _statisticsState extends State<statistics> {
 
                   }
                 ),
-              ),
+              ),  //search 버튼
+
               const SizedBox(height: 20),
 
               Container(
@@ -149,7 +150,49 @@ class _statisticsState extends State<statistics> {
                     ],
                   )
                 ),
-              ),
+              ),  //도표
+
+              const SizedBox(height: 20),
+              
+              Container(
+                width:double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      //width: 160,
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(239, 217, 217, 217),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: TextButton(
+                        child: Text('평균 공부시간 : 12H 12M', style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13
+                        ),),
+                        onPressed: (){},
+
+                      )
+                      ),
+
+                    const SizedBox(width: 10),
+
+                    Container(
+                        //width: 160,
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(239, 217, 217, 217),
+                            borderRadius: BorderRadius.circular(10)),
+                      child: TextButton(
+                        child: Text('최대 공부시간 : 13H 00M',
+                          style: TextStyle(
+                          color: Colors.black,
+                            fontSize: 13
+                        ),),
+                        onPressed: (){},
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
