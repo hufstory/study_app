@@ -25,6 +25,7 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List docList = [];
 List scheduleList = [];
+bool dataLoad = false;
 
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
@@ -86,6 +87,9 @@ class _mainPageState extends State<mainPage> {
     super.initState();
     print(user);
     print(user!.email);
+    setState(() {
+      dataLoad = true;
+    });
   }
 
 
@@ -113,7 +117,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   String? Email = "example.com";
-
   @override
   void initState() {
     // TODO: implement initState
@@ -203,92 +206,88 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       backgroundColor: Colors.transparent,
-      body: FutureBuilder(
-          future: Future.delayed(Duration(milliseconds: 800)),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            else {
+      body: dataLoad
+          ? FutureBuilder(
+            future: Future.delayed(const Duration(milliseconds: 600)),
+            builder: (context, snapshot) {
               return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      getToday(),
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    style: TextButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 25)),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Container(
-                        // 스터디 목록 부분
-                        width: 180,
-                        height: 180,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          image: DecorationImage(
-                            image: AssetImage('assets/grass.png'),
-                          ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          getToday(),
+                          style: TextStyle(color: Colors.black),
                         ),
-                        child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: subjectList.map((e) => Text(e, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),)).toList()),
-                        ),
+                        style: TextButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 25)),
                       ),
-                      Stack(// 타이머 부분
-                          children: [
-                            Container(
-                              padding:
-                                EdgeInsets.only(top: 40.0, bottom: 15.0, right: 40.0),
-                              alignment: Alignment.bottomRight,
-                              width: 180,
-                              height: 180,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(30)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            // 스터디 목록 부분
+                            width: 180,
+                            height: 180,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                              image: DecorationImage(
+                                image: AssetImage('assets/grass.png'),
                               ),
-                              child: Timer(),
                             ),
-                            // Image.asset(
-                            //     'assets/flower.png', width: 120, height: 120)
-                          ]),
-                    ],
-                  ),
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       signOut();
-                  //       Navigator.of(context).pop(LogIn());
-                  //     },
-                  //     child: Text("logout")),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        // 시간표
-                        width: 377.1,
-                        height: 330,
-                        padding: const EdgeInsets.all(5.7),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20.0)),
-                        child: TimeTable(
-                          subjectList1: [...subjectList],
-                        ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: subjectList.map((e) => Text(e, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),)).toList()),
+                            ),
+                          ),
+                          Stack(// 타이머 부분
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.only(top: 40.0, bottom: 15.0, right: 40.0),
+                                  alignment: Alignment.bottomRight,
+                                  width: 180,
+                                  height: 180,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                                  ),
+                                  child: Timer(),
+                                ),
+                                // Image.asset(
+                                //     'assets/flower.png', width: 120, height: 120)
+                              ]),
+                        ],
+                      ),
+                      // ElevatedButton(
+                      //     onPressed: () {
+                      //       signOut();
+                      //       Navigator.of(context).pop(LogIn());
+                      //     },
+                      //     child: Text("logout")),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            // 시간표
+                            width: 377.1,
+                            height: 330,
+                            padding: const EdgeInsets.all(5.7),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20.0)),
+                            child: TimeTable(
+                              subjectList1: [...subjectList],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
-              );
+                  );
             }
-          }),
+          ) : const Center(child: CircularProgressIndicator())
     );
   }
 }

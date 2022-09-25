@@ -75,7 +75,7 @@ class _MessageFormState extends State<MessageForm> {
                     SizedBox(
                       width: 210,
                       child: TextField(
-                        onTap: (){
+                        onTap: () {
                           setState(() {
                             emojiShowing = false;
                           });

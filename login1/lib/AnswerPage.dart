@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class QuestionPage extends StatefulWidget {
-  const QuestionPage({Key? key}) : super(key: key);
+class AnswerPage extends StatefulWidget {
+  const AnswerPage({Key? key}) : super(key: key);
 
   @override
-  State<QuestionPage> createState() => _QuestionPageState();
+  State<AnswerPage> createState() => _AnswerPageState();
 }
 
-class _QuestionPageState extends State<QuestionPage> {
+class _AnswerPageState extends State<AnswerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,9 +104,9 @@ class _QuestionPageState extends State<QuestionPage> {
               children: [
                 Positioned(
                     child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 100,
-                )),
+                      width: MediaQuery.of(context).size.width,
+                      height: 100,
+                    )),
                 Positioned(
                     left: 40,
                     top: 20,
@@ -118,7 +118,7 @@ class _QuestionPageState extends State<QuestionPage> {
                           color: const Color(0xFFFFEDED),
                           borderRadius: BorderRadius.circular(10)),
                       child: const Text(
-                        '질문 등록하기',
+                        '답변하기',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
@@ -139,40 +139,7 @@ class _QuestionPageState extends State<QuestionPage> {
             ),
             const Padding(
               padding: EdgeInsets.only(left: 10.0),
-              child: Text('제목',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
-              child: Container(
-                alignment: AlignmentDirectional.center,
-                width: MediaQuery.of(context).size.width,
-                height: 50,
-                decoration: BoxDecoration(
-                    color: const Color(0xFFFFEDED),
-                    borderRadius: BorderRadius.circular(10)),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 30,
-                  child: TextField(
-                    decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: const EdgeInsets.all(10),
-                        filled: true,
-                        fillColor: Colors.white,
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(10)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(10))),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10.0),
-            const Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Text('질문 내용',
+              child: Text('답변',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             Padding(
@@ -225,7 +192,7 @@ class _QuestionPageState extends State<QuestionPage> {
               child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFFE37E7E),
+                      primary: Color(0xFFE37E7E),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)
                       )
