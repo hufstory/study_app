@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
-import 'package:login1/showStudyRoom.dart';
+import 'package:login1/studyroom/showStudyRoom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login1/loginpage.dart';
 

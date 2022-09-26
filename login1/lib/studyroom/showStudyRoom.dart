@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:login1/ChatRoom.dart';
-import 'package:login1/QuestionPage.dart';
-import 'package:login1/QAPage.dart';
+import 'package:login1/studyroom/chatroom/ChatRoom.dart';
+import 'package:login1/studyroom/QnA/QuestionPage.dart';
+import 'package:login1/studyroom/QnA/QAPage.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 

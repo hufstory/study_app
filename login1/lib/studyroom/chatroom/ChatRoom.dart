@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:login1/messages.dart';
+import 'package:login1/studyroom/chatroom/messages.dart';
 
-import 'MessageForm.dart';
+import 'package:login1/studyroom/chatroom/MessageForm.dart';
 
 class ChatRoom extends StatefulWidget {
   final String name;
