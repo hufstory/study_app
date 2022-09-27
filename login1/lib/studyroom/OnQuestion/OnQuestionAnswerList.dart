@@ -18,25 +18,24 @@ class _OnQuestionAnswerListState extends State<OnQuestionAnswerList> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Color(0xFFFFEDED),
+                  color: const Color(0xFFFFEDED),
                 ),
-                height: 140,
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Row(
                         children: [
-                          Container(
+                          Container( // 프로필 사진이 들어갈 부분입니다
                             width: 45,
                             height: 45,
                             color: Colors.blue,
                           ),
                           const Padding(
                             padding: EdgeInsets.only(left: 8.0),
-                            child: Text(
+                            child: Text( // 유저 닉네임이 들어갈 부분입니다
                               'USER',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold),
@@ -44,10 +43,13 @@ class _OnQuestionAnswerListState extends State<OnQuestionAnswerList> {
                           )
                         ],
                       ),
-                      const Text(
-                        '테스트용 문장입니다',
-                        style:
-                        TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: Text( // 질문 내용이 들어갈 부분입니다
+                          '테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다',
+                          style:
+                          TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
@@ -65,6 +67,7 @@ class _OnQuestionAnswerListState extends State<OnQuestionAnswerList> {
               ),
             );
           },
+          // itemCount -> DB에 저장된 질문 개수에 따라 동적인 조정 필요
           itemCount: 4),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:login1/studyroom/chatroom/messages.dart';
 
 import 'package:login1/studyroom/chatroom/MessageForm.dart';
@@ -33,7 +32,7 @@ class _ChatRoomState extends State<ChatRoom> {
               icon: const Icon(Icons.pending_outlined, color: Colors.black))
         ],
         title: Padding(
-          padding: EdgeInsets.only(left: 0.0),
+          padding: const EdgeInsets.only(left: 0.0),
           child: Text('${widget.name} 자유 채팅방',
               style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         ),

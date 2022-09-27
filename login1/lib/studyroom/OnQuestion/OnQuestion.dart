@@ -14,7 +14,7 @@ class _OnQuestionState extends State<OnQuestion> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Color(0xFFE37E7E),
+          backgroundColor: const Color(0xFFE37E7E),
           // 앱바 투명
           elevation: 0.0,
           leading: TextButton(
@@ -100,10 +100,9 @@ class _OnQuestionState extends State<OnQuestion> {
           Stack(children: [
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 130,
               decoration: const BoxDecoration(color: Color(0xFFE37E7E)),
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.fromLTRB(10, 5, 0, 25),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -127,7 +126,7 @@ class _OnQuestionState extends State<OnQuestion> {
                     const Padding(
                       padding: EdgeInsets.all(9.0),
                       child: Text(
-                        '테스트용 문장입니다',
+                        '테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다',
                         style: TextStyle(
                             fontSize: 13, fontWeight: FontWeight.bold),
                       ),

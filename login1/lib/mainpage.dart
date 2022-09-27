@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'package:login1/studyroom/showStudyRoom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:login1/loginpage.dart';
 
 import 'timer.dart';
 import 'dart:math';
@@ -19,7 +18,6 @@ String getToday() {
   var strToday = formatter.format(now);
   return strToday;
 }
-
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
@@ -80,7 +78,6 @@ class mainPage extends StatefulWidget {
 }
 
 class _mainPageState extends State<mainPage> {
-
   @override
   initState() {
     readStudyData();
@@ -92,7 +89,7 @@ class _mainPageState extends State<mainPage> {
     });
   }
 
-
+  @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp]); // 가로방향 못돌리게
@@ -117,100 +114,102 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   String? Email = "example.com";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     Email = user!.email;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(27.0),
-        child: AppBar(
-          title: const Text(' '),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          // 앱바 투명
-          elevation: 0.0,
-          actions: [
-            Builder(
-              // Drawer 아이콘 색 지정 위해 Builder 위젯 사용
-              builder: (context) => IconButton(
-                icon: const Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer(); // Drawer 열음
-                },
-              ),
-            )
-          ],
-        ),
-      ),
-      endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('assets/boo.png'),
-              ),
-              accountName: Text('BOO'),
-              accountEmail: Text(''),
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xffe5cdde), Color(0xff9b7fc1)],
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(27.0),
+          child: AppBar(
+            title: const Text(' '),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            // 앱바 투명
+            elevation: 0.0,
+            actions: [
+              Builder(
+                // Drawer 아이콘 색 지정 위해 Builder 위젯 사용
+                builder: (context) => IconButton(
+                  icon: const Icon(
+                    Icons.menu,
+                    color: Colors.black,
                   ),
-                  borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(40.0),
-                      bottomLeft: Radius.circular(40.0))),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.account_circle,
-                color: Colors.grey[850],
-              ),
-              title: const Text('계정 정보'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.people,
-                color: Colors.grey[850],
-              ),
-              title: const Text('스터디 게시판'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.mail,
-                color: Colors.grey[850],
-              ),
-              title: const Text('문의하기'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.book,
-                color: Colors.grey[850],
-              ),
-              title: const Text('자주하는 질문(가이드)'),
-              onTap: () {},
-            ),
-          ],
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer(); // Drawer 열음
+                  },
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-      backgroundColor: Colors.transparent,
-      body: dataLoad
-          ? FutureBuilder(
-            future: Future.delayed(const Duration(milliseconds: 600)),
-            builder: (context, snapshot) {
-              return Column(
+        endDrawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const UserAccountsDrawerHeader(
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: AssetImage('assets/boo.png'),
+                ),
+                accountName: Text('BOO'),
+                accountEmail: Text(''),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xffe5cdde), Color(0xff9b7fc1)],
+                    ),
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(40.0),
+                        bottomLeft: Radius.circular(40.0))),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.account_circle,
+                  color: Colors.grey[850],
+                ),
+                title: const Text('계정 정보'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.people,
+                  color: Colors.grey[850],
+                ),
+                title: const Text('스터디 게시판'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.mail,
+                  color: Colors.grey[850],
+                ),
+                title: const Text('문의하기'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.book,
+                  color: Colors.grey[850],
+                ),
+                title: const Text('자주하는 질문(가이드)'),
+                onTap: () {},
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        body: dataLoad
+            ? FutureBuilder(
+                future: Future.delayed(const Duration(milliseconds: 600)),
+                builder: (context, snapshot) {
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       TextButton(
@@ -231,7 +230,8 @@ class _MainPageState extends State<MainPage> {
                             height: 180,
                             decoration: const BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
                               image: DecorationImage(
                                 image: AssetImage('assets/grass.png'),
                               ),
@@ -240,25 +240,35 @@ class _MainPageState extends State<MainPage> {
                               padding: const EdgeInsets.all(20.0),
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: subjectList.map((e) => Text(e, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),)).toList()),
+                                  children: <Widget>[
+                                    for (var item in subjectList)
+                                      Text(
+                                        item,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17),
+                                      )
+                                  ]),
                             ),
                           ),
                           Stack(// 타이머 부분
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.only(top: 40.0, bottom: 15.0, right: 40.0),
-                                  alignment: Alignment.bottomRight,
-                                  width: 180,
-                                  height: 180,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                                  ),
-                                  child: Timer(),
-                                ),
-                                // Image.asset(
-                                //     'assets/flower.png', width: 120, height: 120)
-                              ]),
+                            Container(
+                              padding: const EdgeInsets.only(
+                                  top: 40.0, bottom: 15.0, right: 40.0),
+                              alignment: Alignment.bottomRight,
+                              width: 180,
+                              height: 180,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)),
+                              ),
+                              child: Timer(),
+                            ),
+                            // Image.asset(
+                            //     'assets/flower.png', width: 120, height: 120)
+                          ]),
                         ],
                       ),
                       // ElevatedButton(
@@ -286,9 +296,8 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ],
                   );
-            }
-          ) : const Center(child: CircularProgressIndicator())
-    );
+                })
+            : const Center(child: CircularProgressIndicator()));
   }
 }
 
@@ -378,8 +387,12 @@ class _TimeTableState extends State<TimeTable> {
         return [
           TableEvent(
               onTap: () {
-                Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(builder: (context) => StudyRoom(studyID: docList[i],
-                  studyName: scheduleList[i]["studyName"],)));
+                Navigator.of(context, rootNavigator: true)
+                    .push(MaterialPageRoute(
+                        builder: (context) => StudyRoom(
+                              studyID: docList[i],
+                              studyName: scheduleList[i]["studyName"],
+                            )));
               },
               title: scheduleList[i]["studyName"].toString(),
               start: TableEventTime(
