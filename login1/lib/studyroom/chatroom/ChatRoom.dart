@@ -18,6 +18,13 @@ class _ChatRoomState extends State<ChatRoom> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0.0,
+        shape: const Border(
+          bottom: BorderSide(
+            color: Color(0xFFF1F1F1),
+            width: 2,
+          )
+        ),
         centerTitle: false,
         backgroundColor: Colors.white,
         leading: IconButton(

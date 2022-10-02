@@ -238,17 +238,31 @@ class _MainPageState extends State<MainPage> {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    for (var item in subjectList)
-                                      Text(
-                                        item,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17),
-                                      )
-                                  ]),
+                              child: StreamBuilder<DocumentSnapshot>(
+                                stream: db.collection('users').doc(uid!).snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const Center(
+                                        child: Text(
+                                          '등록된 스터디가 없습니다.',
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                                        ));
+                                  }
+                                  return SingleChildScrollView(
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          for (var item in subjectList)
+                                            Text(
+                                              item,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 17),
+                                            )
+                                        ]),
+                                  );
+                                }
+                              ),
                             ),
                           ),
                           Stack(// 타이머 부분
@@ -315,12 +329,12 @@ class _TimeTableState extends State<TimeTable> {
     return StreamBuilder<DocumentSnapshot>(
         stream: db.collection('users').doc(uid!).snapshots(),
         builder: (context, snapshot) {
-          // if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return const Center(
-          //     child: CircularProgressIndicator(),
-          //   );
-          // }
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (subjectList.isEmpty) {
             return const Center(
                 child: Text(
               '등록된 스터디가 없습니다.',
