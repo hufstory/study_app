@@ -107,8 +107,7 @@ class _statisticsState extends State<statistics> {
 
                   child: const Text('Search'),
                   onPressed: () async {
-                    studyDates = [];
-                    studyTimes = [];
+                    List<String> study_dates = [];
 
                     final uid = FirebaseAuth.instance.currentUser!.uid;
                     List<String> dates = [];
@@ -116,7 +115,7 @@ class _statisticsState extends State<statistics> {
 
                     while(duration >= 0) {
                       dates.add(formatter.format(dateRange.end.subtract(new Duration(hours: duration))));
-                      studyDates.add(month_dayFormatter.format(dateRange.end.subtract(new Duration(hours: duration))));
+                      study_dates.add(month_dayFormatter.format(dateRange.end.subtract(new Duration(hours: duration))));
                       duration -= 24;
                     }
                     List<int> times = [];
@@ -128,7 +127,11 @@ class _statisticsState extends State<statistics> {
                           }
                       );
                     }
-                    studyTimes = times;
+                    setState(() {
+                      studyDates = study_dates;
+                      studyTimes = times;
+                    });
+
                     print(studyDates);
                     print(studyTimes);
 
@@ -145,7 +148,12 @@ class _statisticsState extends State<statistics> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(child: chartToRun())
+                      if(studyTimes.isNotEmpty && studyDates.isNotEmpty)...[
+                        Expanded(child: chartToRun(studyTimes, studyDates))
+                      ]
+                      else...[
+                        SizedBox(height: 30.0),
+                      ]
                     ],
                   )
                 ),
@@ -169,7 +177,7 @@ class _statisticsState extends State<statistics> {
     setState(() => dateRange = newDateRange);
   }
 }
-Widget chartToRun() {
+Widget chartToRun(List<int> data, List<String> xLabel) {
   LabelLayoutStrategy? xContainerLabelLayoutStrategy;
   ChartData chartData;
   ChartOptions chartOptions = const ChartOptions();
@@ -177,16 +185,14 @@ Widget chartToRun() {
   // This example shows the result with sufficient space to show all labels
   chartData = ChartData(
     dataRowsColors: const[Colors.blue],
-    dataRows: const [
-      [10.0, 5.0, 13.0, 5.0, 8.0, 9.0]
-    ],
-    xUserLabels: const ['9/1', '9/2', '9/3', '9/4', '9/5', '9/6'],
+    dataRows: [data.map((element) => element.toDouble()).toList()],
+    xUserLabels: xLabel,
     dataRowsLegends: const [
       '사용 시간',
     ],
     chartOptions: chartOptions,
   );
-  //exampleSideEffects = _ExampleSideEffects()..leftSqueezeText=''.. rightSqueezeText='';
+  // exampleSideEffects = _ExampleSideEffects()..leftSqueezeText=''.. rightSqueezeText='';
   var verticalBarChartContainer = VerticalBarChartTopContainer(
     chartData: chartData,
     xContainerLabelLayoutStrategy: xContainerLabelLayoutStrategy,
