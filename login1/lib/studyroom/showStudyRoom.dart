@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
-import 'package:login1/ChatRoom.dart';
-import 'package:login1/QuestionPage.dart';
+import 'package:login1/studyroom/chatroom/ChatRoom.dart';
+import 'package:login1/studyroom/QnA/QuestionPage.dart';
+import 'package:login1/studyroom/QnA/QAPage.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -49,8 +49,7 @@ class _StudyRoomState extends State<StudyRoom> {
           return AlertDialog(
             backgroundColor: const Color(0xFFD9D9D9),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0)
-            ),
+                borderRadius: BorderRadius.circular(20.0)),
             contentPadding: const EdgeInsets.fromLTRB(20, 25, 20, 20),
             content: Container(
               width: 380,
@@ -60,12 +59,21 @@ class _StudyRoomState extends State<StudyRoom> {
                 children: [
                   Column(
                     children: const [
-                      Text('공지사항', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),)
+                      Text(
+                        '공지사항',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
                   Column(
-                    children: alertList.map((e) => Text(e, style: const TextStyle(fontSize: 17),)).toList(),
+                    children: alertList
+                        .map((e) => Text(
+                              e,
+                              style: const TextStyle(fontSize: 17),
+                            ))
+                        .toList(),
                   )
                 ],
               ),
@@ -81,8 +89,7 @@ class _StudyRoomState extends State<StudyRoom> {
           return AlertDialog(
             backgroundColor: const Color(0xFFD9D9D9),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)
-            ),
+                borderRadius: BorderRadius.circular(20.0)),
             contentPadding: const EdgeInsets.fromLTRB(20, 25, 20, 20),
             content: Container(
               width: 380,
@@ -92,12 +99,21 @@ class _StudyRoomState extends State<StudyRoom> {
                 children: [
                   Column(
                     children: const [
-                      Text('스터디룸 규칙', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),)
+                      Text(
+                        '스터디룸 규칙',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
                   Column(
-                    children: ruleList.map((e) => Text(e, style: const TextStyle(fontSize: 17),)).toList(),
+                    children: ruleList
+                        .map((e) => Text(
+                              e,
+                              style: const TextStyle(fontSize: 17),
+                            ))
+                        .toList(),
                   )
                 ],
               ),
@@ -212,7 +228,7 @@ class _StudyRoomState extends State<StudyRoom> {
                   ),
                 ),
                 body: Padding(
-                  padding: const EdgeInsets.all(18.0),
+                  padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,7 +282,10 @@ class _StudyRoomState extends State<StudyRoom> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuestionPage()));
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                QuestionPage()));
                                   },
                                   style: ElevatedButton.styleFrom(
                                       primary: const Color(0xFFD9D9D9),
@@ -278,7 +297,12 @@ class _StudyRoomState extends State<StudyRoom> {
                                   ),
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => QAPage(
+                                                studyName: widget.studyName)));
+                                  },
                                   style: ElevatedButton.styleFrom(
                                       primary: const Color(0xFFD9D9D9),
                                       fixedSize: const Size(55, 55),
@@ -288,7 +312,10 @@ class _StudyRoomState extends State<StudyRoom> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatRoom(name: widget.studyName)));
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) => ChatRoom(
+                                                name: widget.studyName)));
                                   },
                                   style: ElevatedButton.styleFrom(
                                       primary: const Color(0xFFD9D9D9),
@@ -352,6 +379,8 @@ class _StudyRoomState extends State<StudyRoom> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: alertList
                                     .map((e) => Text(e,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
                                         style: const TextStyle(
                                             color: Colors.black, fontSize: 17)))
                                     .toList(),
@@ -364,7 +393,7 @@ class _StudyRoomState extends State<StudyRoom> {
                               color: Colors.black,
                               fontWeight: FontWeight.bold)),
                       GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           showRuleDialog();
                         },
                         child: Container(
@@ -380,6 +409,8 @@ class _StudyRoomState extends State<StudyRoom> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: ruleList
                                     .map((e) => Text(e,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
                                         style: const TextStyle(
                                             color: Colors.black, fontSize: 17)))
                                     .toList(),

@@ -225,7 +225,7 @@ class _QuestionPageState extends State<QuestionPage> {
               child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFE37E7E),
+                      primary: const Color(0xFFE37E7E),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)
                       )
