@@ -20,6 +20,8 @@ class _statisticsState extends State<statistics> {
   DateTimeRange dateRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
   List<int> studyTimes = [];
   List<String> studyDates = [];
+  int averageStudyTime = 0;
+  int maxStudyTime = 0;
 
   get data => null;
 
@@ -127,9 +129,20 @@ class _statisticsState extends State<statistics> {
                           }
                       );
                     }
+
+                    int total = 0;
+                    int max = 0;
+
+                    for(int i = 0; i < times.length; i++) {
+                      total += times[i];
+                      if(max < times[i]) max = times[i];
+                    }
+
                     setState(() {
                       studyDates = study_dates;
                       studyTimes = times;
+                      averageStudyTime = (total / times.length).round();
+                      maxStudyTime = max;
                     });
 
                     print(studyDates);
@@ -173,7 +186,8 @@ class _statisticsState extends State<statistics> {
                         color: const Color.fromARGB(239, 217, 217, 217),
                           borderRadius: BorderRadius.circular(10)),
                       child: TextButton(
-                        child: Text('평균 공부시간 : 12H 12M', style: TextStyle(
+                        child: Text('평균 공부시간 : ${(averageStudyTime / 60).floor()}H ${averageStudyTime % 60}M',
+                          style: TextStyle(
                           color: Colors.black,
                           fontSize: 13
                         ),),
@@ -190,7 +204,7 @@ class _statisticsState extends State<statistics> {
                             color: const Color.fromARGB(239, 217, 217, 217),
                             borderRadius: BorderRadius.circular(10)),
                       child: TextButton(
-                        child: Text('최대 공부시간 : 13H 00M',
+                        child: Text('최대 공부시간 : ${(maxStudyTime / 60).floor()}H ${maxStudyTime % 60}M',
                           style: TextStyle(
                           color: Colors.black,
                             fontSize: 13
