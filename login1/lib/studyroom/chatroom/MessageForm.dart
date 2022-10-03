@@ -59,9 +59,9 @@ class _MessageFormState extends State<MessageForm> {
                             iconSize: 20.0,
                             onPressed: () {
                               setState(() {
+                                FocusManager.instance.primaryFocus?.unfocus();
                                 emojiShowing = !emojiShowing;
                               });
-                              FocusManager.instance.primaryFocus?.unfocus();
                             },
                             icon: !emojiShowing
                                 ? const Icon(
@@ -125,7 +125,7 @@ class _MessageFormState extends State<MessageForm> {
               ElevatedButton(
                 onPressed: _controller.text.isEmpty ? null : () {},
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.blueAccent,
+                    backgroundColor: Colors.blueAccent,
                     shape: const CircleBorder(),
                     fixedSize: const Size(50, 50)),
                 child: const Icon(Icons.send, color: Colors.white),
@@ -139,7 +139,7 @@ class _MessageFormState extends State<MessageForm> {
               height: 250,
               child: EmojiPicker(
                 textEditingController: _controller,
-                onEmojiSelected: (Category category, Emoji emoji) {
+                onEmojiSelected: (Category? category, Emoji emoji) {
                   _onEmojiSelected(emoji);
                 },
                 onBackspacePressed: _onBackspacePressed,
@@ -154,7 +154,7 @@ class _MessageFormState extends State<MessageForm> {
                     indicatorColor: Colors.blue,
                     iconColor: Colors.grey,
                     iconColorSelected: Colors.blue,
-                    progressIndicatorColor: Colors.blue,
+                    // progressIndicatorColor: Colors.blue,
                     backspaceColor: Colors.blue,
                     skinToneDialogBgColor: Colors.white,
                     skinToneIndicatorColor: Colors.grey,

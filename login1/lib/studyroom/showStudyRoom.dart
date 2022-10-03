@@ -139,6 +139,7 @@ class _StudyRoomState extends State<StudyRoom> {
             return const Center(child: CircularProgressIndicator());
           } else {
             return Scaffold(
+                resizeToAvoidBottomInset: false,
                 backgroundColor: const Color(0xFFE6E6E6),
                 appBar: PreferredSize(
                   preferredSize: const Size.fromHeight(45.0),
@@ -376,15 +377,17 @@ class _StudyRoomState extends State<StudyRoom> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: alertList
-                                    .map((e) => Text(e,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    for (var item in alertList)
+                                      Text(
+                                        item,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                         style: const TextStyle(
-                                            color: Colors.black, fontSize: 17)))
-                                    .toList(),
-                              ),
+                                            color: Colors.black, fontSize: 17),
+                                      )
+                                  ]),
                             )),
                       ),
                       const Text('스터디룸 규칙',
@@ -406,15 +409,17 @@ class _StudyRoomState extends State<StudyRoom> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: ruleList
-                                    .map((e) => Text(e,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    for (var item in ruleList)
+                                      Text(
+                                        item,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 2,
                                         style: const TextStyle(
-                                            color: Colors.black, fontSize: 17)))
-                                    .toList(),
-                              ),
+                                            color: Colors.black, fontSize: 17),
+                                      )
+                                  ]),
                             )),
                       ),
                     ],
