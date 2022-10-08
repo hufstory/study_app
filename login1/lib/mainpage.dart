@@ -23,49 +23,54 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List docList = [];
 List scheduleList = [];
-bool dataLoad = false;
+bool _isLoading = true;
+bool _isInit = true;
 
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
 var _auth = FirebaseAuth.instance;
 String email = FirebaseAuth.instance.currentUser!.email.toString();
 
-readStudyData() {
-  db.collection('users').doc(uid!).snapshots().listen((DocumentSnapshot ds) {
+Future readStudyData() async {
+  await db.collection('users').doc(uid!).get().then((DocumentSnapshot ds) {
     List temp = ds.get('participatingStudyGroup') as List;
-    temp.forEach((element) {
+    for (var element in temp) {
       docList.add(element);
-    });
-    print('len: ${docList.length}');
-    print('UID: $uid');
+    }
+    // print('len: ${docList.length}');
+    // print('UID: $uid');
     readScheduleData();
     readSubjectData();
   });
 }
 
-readScheduleData() {
+Future readScheduleData() async {
   for (int i = 0; i < docList.length; i++) {
-    db
+    await db
         .collection('studyroom')
         .doc(docList[i])
         .collection('schedule')
-        .snapshots()
-        .listen((QuerySnapshot qs) {
-      qs.docs.forEach((doc) => scheduleList.add(doc.data()));
+        .get()
+        .then((QuerySnapshot qs) {
+      for (var doc in qs.docs) {
+        scheduleList.add(doc.data());
+      }
     });
   }
 }
 
-readSubjectData() {
+Future readSubjectData() async {
   for (int i = 0; i < docList.length; i++) {
-    db
+    await db
         .collection('studyroom')
         .doc(docList[i])
         .collection('schedule')
-        .snapshots()
-        .listen((QuerySnapshot qs) {
-      qs.docs.forEach((doc) => subjectList.add(doc['studyName'].toString()));
-      print(subjectList);
+        .get()
+        .then((QuerySnapshot qs) {
+      for (var doc in qs.docs) {
+        subjectList.add(doc['studyName'].toString());
+      }
+      // print(subjectList);
     });
   }
 }
@@ -82,11 +87,6 @@ class _mainPageState extends State<mainPage> {
   initState() {
     readStudyData();
     super.initState();
-    print(user);
-    print(user!.email);
-    setState(() {
-      dataLoad = true;
-    });
   }
 
   @override
@@ -116,21 +116,23 @@ class _MainPageState extends State<MainPage> {
   String? Email = "example.com";
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Email = user!.email;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return dataLoad
-        ? FutureBuilder(
-            future: Future.delayed(const Duration(milliseconds: 800)),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
+    return FutureBuilder(
+        future: readStudyData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator()
+            );
+          } else {
+            return FutureBuilder(
+              future: Future.delayed(const Duration(milliseconds: 800)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator()
+                  );
+                }
                 return Scaffold(
                     appBar: PreferredSize(
                       preferredSize: const Size.fromHeight(27.0),
@@ -149,8 +151,7 @@ class _MainPageState extends State<MainPage> {
                                 color: Colors.black,
                               ),
                               onPressed: () {
-                                Scaffold.of(context)
-                                    .openEndDrawer(); // Drawer 열음
+                                Scaffold.of(context).openEndDrawer(); // Drawer 열음
                               },
                             ),
                           )
@@ -171,10 +172,7 @@ class _MainPageState extends State<MainPage> {
                                 gradient: LinearGradient(
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xffe5cdde),
-                                    Color(0xff9b7fc1)
-                                  ],
+                                  colors: [Color(0xffe5cdde), Color(0xff9b7fc1)],
                                 ),
                                 borderRadius: BorderRadius.only(
                                     bottomRight: Radius.circular(40.0),
@@ -238,7 +236,7 @@ class _MainPageState extends State<MainPage> {
                               decoration: const BoxDecoration(
                                 color: Colors.white,
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
+                                BorderRadius.all(Radius.circular(30)),
                                 image: DecorationImage(
                                   image: AssetImage('assets/grass.png'),
                                 ),
@@ -254,23 +252,22 @@ class _MainPageState extends State<MainPage> {
                                       if (!snapshot.hasData) {
                                         return const Center(
                                             child: Text(
-                                          '등록된 스터디가 없습니다.',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 17),
-                                        ));
+                                              '등록된 스터디가 없습니다.',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 17),
+                                            ));
                                       }
                                       return SingleChildScrollView(
                                         child: Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: <Widget>[
                                               for (var item in subjectList)
                                                 Text(
                                                   item,
                                                   style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                      fontWeight: FontWeight.bold,
                                                       fontSize: 17),
                                                 )
                                             ]),
@@ -280,22 +277,22 @@ class _MainPageState extends State<MainPage> {
                             ),
                             Stack(// 타이머 부분
                                 children: [
-                              Container(
-                                padding: const EdgeInsets.only(
-                                    top: 40.0, bottom: 15.0, right: 40.0),
-                                alignment: Alignment.bottomRight,
-                                width: 180,
-                                height: 180,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
+                                  Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 40.0, bottom: 15.0, right: 40.0),
+                                    alignment: Alignment.bottomRight,
+                                    width: 180,
+                                    height: 180,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
                                       BorderRadius.all(Radius.circular(30)),
-                                ),
-                                child: Timer(),
-                              ),
-                              // Image.asset(
-                              //     'assets/flower.png', width: 120, height: 120)
-                            ]),
+                                    ),
+                                    child: Timer(),
+                                  ),
+                                  // Image.asset(
+                                  //     'assets/flower.png', width: 120, height: 120)
+                                ]),
                           ],
                         ),
                         // ElevatedButton(
@@ -324,8 +321,9 @@ class _MainPageState extends State<MainPage> {
                       ],
                     ));
               }
-            })
-        : const Center(child: CircularProgressIndicator());
+            );
+          }
+        });
   }
 }
 
