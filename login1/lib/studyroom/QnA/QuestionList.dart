@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'AnswerPage.dart';
 import '../OnQuestion/OnQuestion.dart';
@@ -10,6 +11,8 @@ class QuestionList extends StatefulWidget {
 }
 
 class _QuestionListState extends State<QuestionList> {
+  final questions = FirebaseFirestore.instance.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("question");
+
   @override
   Widget build(BuildContext context) {
     return Expanded(

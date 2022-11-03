@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login1/SignUpPage.dart';
 
 class QuestionPage extends StatefulWidget {
   const QuestionPage({Key? key}) : super(key: key);
@@ -8,6 +11,20 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final db = FirebaseFirestore.instance;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  String _title = '';
+  String _description = '';
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,6 +171,12 @@ class _QuestionPageState extends State<QuestionPage> {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width - 30,
                   child: TextField(
+                    controller: _titleController,
+                    onChanged: (value) {
+                      setState(() {
+                        _title = value;
+                      });
+                    },
                     decoration: InputDecoration(
                         isDense: true,
                         contentPadding: const EdgeInsets.all(10),
@@ -188,6 +211,12 @@ class _QuestionPageState extends State<QuestionPage> {
                   width: MediaQuery.of(context).size.width - 30,
                   height: 240,
                   child: TextField(
+                    controller: _descriptionController,
+                    onChanged: (value) {
+                      setState(() {
+                        _description = value;
+                      });
+                    },
                     keyboardType: TextInputType.multiline,
                     maxLines: 20,
                     decoration: InputDecoration(
@@ -223,7 +252,16 @@ class _QuestionPageState extends State<QuestionPage> {
             ),
             Center(
               child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _descriptionController.text.isEmpty && _titleController.text.isEmpty ? null : () async {
+                    await db.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("question").doc().set({
+                      "title": _title,
+                      "description": _description,
+                      "author": uid,
+                    }).onError((error, stackTrace) => print(error));
+
+                    showSnackBar(context, "질문을 등록했습니다.");
+                    Navigator.pop(context);
+                  },
                   style: ElevatedButton.styleFrom(
                       primary: const Color(0xFFE37E7E),
                       shape: RoundedRectangleBorder(

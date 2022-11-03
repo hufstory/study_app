@@ -1,7 +1,8 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MessageForm extends StatefulWidget {
   const MessageForm({Key? key}) : super(key: key);
@@ -12,7 +13,10 @@ class MessageForm extends StatefulWidget {
 
 class _MessageFormState extends State<MessageForm> {
   final TextEditingController _controller = TextEditingController();
+  String _userEnterMessage = '';
   bool emojiShowing = false;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  final db = FirebaseFirestore.instance;
 
   _onEmojiSelected(Emoji emoji) {
     print('_onEmojiSelected: ${emoji.emoji}');
@@ -29,9 +33,7 @@ class _MessageFormState extends State<MessageForm> {
       });
     }
   }
-
-  var _userEnterMessage = '';
-
+  
   @override
   void dispose() {
     _controller.dispose();
@@ -123,7 +125,21 @@ class _MessageFormState extends State<MessageForm> {
                 ),
               )),
               ElevatedButton(
-                onPressed: _controller.text.isEmpty ? null : () {},
+                onPressed: _controller.text.isEmpty ? null : () async {
+
+                  String Nickname = "";
+                  await db.collection("users").doc(uid).get().then((value) => Nickname = value.data()!["Nickname"]);
+
+                  await db.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("talk").doc().set({
+                    "text": _userEnterMessage,
+                    "Nickname": Nickname,
+                    "time": DateTime.now(),
+                  }).onError((error, stackTrace) => print(error));
+                  setState(() {
+                    _userEnterMessage = "";
+                    _controller.clear();
+                  });
+                },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                     shape: const CircleBorder(),

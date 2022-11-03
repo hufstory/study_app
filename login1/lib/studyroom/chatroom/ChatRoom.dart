@@ -44,8 +44,18 @@ class _ChatRoomState extends State<ChatRoom> {
                   color: Colors.black, fontWeight: FontWeight.bold)),
         ),
       ),
+<<<<<<< HEAD
+      body: Container(
+        child: Column(
+          children: [
+            Expanded(child: Messages()),
+            MessageForm()
+          ],
+        ),
+=======
       body: Column(
         children: [Messages(), MessageForm()],
+>>>>>>> 71bae1f5caaa353ebe70ed5179d80cc31d9acbe7
       ),
     );
   }
