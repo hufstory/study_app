@@ -188,7 +188,8 @@ class _MessageFormState extends State<MessageForm> {
                     ),
                     tabIndicatorAnimDuration: kTabScrollDuration,
                     categoryIcons: const CategoryIcons(),
-                    buttonMode: ButtonMode.CUPERTINO),
+                    buttonMode: ButtonMode.CUPERTINO,
+                    checkPlatformCompatibility: true),
               ),
             ),
           )

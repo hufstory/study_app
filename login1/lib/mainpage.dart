@@ -23,49 +23,54 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List docList = [];
 List scheduleList = [];
-bool dataLoad = false;
+bool _isLoading = true;
+bool _isInit = true;
 
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
 var _auth = FirebaseAuth.instance;
 String email = FirebaseAuth.instance.currentUser!.email.toString();
 
-readStudyData() {
-  db.collection('users').doc(uid!).snapshots().listen((DocumentSnapshot ds) {
+Future readStudyData() async {
+  await db.collection('users').doc(uid!).get().then((DocumentSnapshot ds) {
     List temp = ds.get('participatingStudyGroup') as List;
-    temp.forEach((element) {
+    for (var element in temp) {
       docList.add(element);
-    });
-    print('len: ${docList.length}');
-    print('UID: $uid');
+    }
+    // print('len: ${docList.length}');
+    // print('UID: $uid');
     readScheduleData();
     readSubjectData();
   });
 }
 
-readScheduleData() {
+Future readScheduleData() async {
   for (int i = 0; i < docList.length; i++) {
-    db
+    await db
         .collection('studyroom')
         .doc(docList[i])
         .collection('schedule')
-        .snapshots()
-        .listen((QuerySnapshot qs) {
-      qs.docs.forEach((doc) => scheduleList.add(doc.data()));
+        .get()
+        .then((QuerySnapshot qs) {
+      for (var doc in qs.docs) {
+        scheduleList.add(doc.data());
+      }
     });
   }
 }
 
-readSubjectData() {
+Future readSubjectData() async {
   for (int i = 0; i < docList.length; i++) {
-    db
+    await db
         .collection('studyroom')
         .doc(docList[i])
         .collection('schedule')
-        .snapshots()
-        .listen((QuerySnapshot qs) {
-      qs.docs.forEach((doc) => subjectList.add(doc['studyName'].toString()));
-      print(subjectList);
+        .get()
+        .then((QuerySnapshot qs) {
+      for (var doc in qs.docs) {
+        subjectList.add(doc['studyName'].toString());
+      }
+      // print(subjectList);
     });
   }
 }
@@ -82,11 +87,6 @@ class _mainPageState extends State<mainPage> {
   initState() {
     readStudyData();
     super.initState();
-    print(user);
-    print(user!.email);
-    setState(() {
-      dataLoad = true;
-    });
   }
 
   @override
@@ -116,202 +116,214 @@ class _MainPageState extends State<MainPage> {
   String? Email = "example.com";
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    Email = user!.email;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(27.0),
-          child: AppBar(
-            title: const Text(' '),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            // 앱바 투명
-            elevation: 0.0,
-            actions: [
-              Builder(
-                // Drawer 아이콘 색 지정 위해 Builder 위젯 사용
-                builder: (context) => IconButton(
-                  icon: const Icon(
-                    Icons.menu,
-                    color: Colors.black,
-                  ),
-                  onPressed: () {
-                    Scaffold.of(context).openEndDrawer(); // Drawer 열음
-                  },
-                ),
-              )
-            ],
-          ),
-        ),
-        endDrawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const UserAccountsDrawerHeader(
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage('assets/boo.png'),
-                ),
-                accountName: Text('BOO'),
-                accountEmail: Text(''),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xffe5cdde), Color(0xff9b7fc1)],
-                    ),
-                    borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(40.0),
-                        bottomLeft: Radius.circular(40.0))),
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.account_circle,
-                  color: Colors.grey[850],
-                ),
-                title: const Text('계정 정보'),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.people,
-                  color: Colors.grey[850],
-                ),
-                title: const Text('스터디 게시판'),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.mail,
-                  color: Colors.grey[850],
-                ),
-                title: const Text('문의하기'),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.book,
-                  color: Colors.grey[850],
-                ),
-                title: const Text('자주하는 질문(가이드)'),
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        body: dataLoad
-            ? FutureBuilder(
-                future: Future.delayed(const Duration(milliseconds: 600)),
-                builder: (context, snapshot) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          getToday(),
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        style: TextButton.styleFrom(
-                            textStyle: const TextStyle(fontSize: 25)),
+    return FutureBuilder(
+        future: readStudyData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator()
+            );
+          } else {
+            return FutureBuilder(
+              future: Future.delayed(const Duration(milliseconds: 800)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                      child: CircularProgressIndicator()
+                  );
+                }
+                return Scaffold(
+                    appBar: PreferredSize(
+                      preferredSize: const Size.fromHeight(27.0),
+                      child: AppBar(
+                        title: const Text(' '),
+                        centerTitle: true,
+                        backgroundColor: Colors.transparent,
+                        // 앱바 투명
+                        elevation: 0.0,
+                        actions: [
+                          Builder(
+                            // Drawer 아이콘 색 지정 위해 Builder 위젯 사용
+                            builder: (context) => IconButton(
+                              icon: const Icon(
+                                Icons.menu,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {
+                                Scaffold.of(context).openEndDrawer(); // Drawer 열음
+                              },
+                            ),
+                          )
+                        ],
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    ),
+                    endDrawer: Drawer(
+                      child: ListView(
+                        padding: EdgeInsets.zero,
                         children: [
-                          Container(
-                            // 스터디 목록 부분
-                            width: 180,
-                            height: 180,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                              image: DecorationImage(
-                                image: AssetImage('assets/grass.png'),
-                              ),
+                          const UserAccountsDrawerHeader(
+                            currentAccountPicture: CircleAvatar(
+                              backgroundImage: AssetImage('assets/boo.png'),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: StreamBuilder<DocumentSnapshot>(
-                                stream: db.collection('users').doc(uid!).snapshots(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return const Center(
-                                        child: Text(
-                                          '등록된 스터디가 없습니다.',
-                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                                        ));
-                                  }
-                                  return SingleChildScrollView(
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          for (var item in subjectList)
-                                            Text(
-                                              item,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 17),
-                                            )
-                                        ]),
-                                  );
-                                }
-                              ),
-                            ),
+                            accountName: Text('BOO'),
+                            accountEmail: Text(''),
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [Color(0xffe5cdde), Color(0xff9b7fc1)],
+                                ),
+                                borderRadius: BorderRadius.only(
+                                    bottomRight: Radius.circular(40.0),
+                                    bottomLeft: Radius.circular(40.0))),
                           ),
-                          Stack(// 타이머 부분
-                              children: [
+                          ListTile(
+                            leading: Icon(
+                              Icons.account_circle,
+                              color: Colors.grey[850],
+                            ),
+                            title: const Text('계정 정보'),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            leading: Icon(
+                              Icons.people,
+                              color: Colors.grey[850],
+                            ),
+                            title: const Text('스터디 게시판'),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            leading: Icon(
+                              Icons.mail,
+                              color: Colors.grey[850],
+                            ),
+                            title: const Text('문의하기'),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            leading: Icon(
+                              Icons.book,
+                              color: Colors.grey[850],
+                            ),
+                            title: const Text('자주하는 질문(가이드)'),
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    ),
+                    backgroundColor: Colors.transparent,
+                    body: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            getToday(),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          style: TextButton.styleFrom(
+                              textStyle: const TextStyle(fontSize: 25)),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
                             Container(
-                              padding: const EdgeInsets.only(
-                                  top: 40.0, bottom: 15.0, right: 40.0),
-                              alignment: Alignment.bottomRight,
+                              // 스터디 목록 부분
                               width: 180,
                               height: 180,
                               decoration: const BoxDecoration(
                                 color: Colors.white,
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
+                                BorderRadius.all(Radius.circular(30)),
+                                image: DecorationImage(
+                                  image: AssetImage('assets/grass.png'),
+                                ),
                               ),
-                              child: Timer(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: StreamBuilder<DocumentSnapshot>(
+                                    stream: db
+                                        .collection('users')
+                                        .doc(uid!)
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return const Center(
+                                            child: Text(
+                                              '등록된 스터디가 없습니다.',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 17),
+                                            ));
+                                      }
+                                      return SingleChildScrollView(
+                                        child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              for (var item in subjectList)
+                                                Text(
+                                                  item,
+                                                  style: const TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 17),
+                                                )
+                                            ]),
+                                      );
+                                    }),
+                              ),
                             ),
-                            // Image.asset(
-                            //     'assets/flower.png', width: 120, height: 120)
-                          ]),
-                        ],
-                      ),
-                      // ElevatedButton(
-                      //     onPressed: () {
-                      //       signOut();
-                      //       Navigator.of(context).pop(LogIn());
-                      //     },
-                      //     child: Text("logout")),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            // 시간표
-                            width: 377.1,
-                            height: 330,
-                            padding: const EdgeInsets.all(5.7),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20.0)),
-                            child: TimeTable(
-                              subjectList1: [...subjectList],
+                            Stack(// 타이머 부분
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 40.0, bottom: 15.0, right: 40.0),
+                                    alignment: Alignment.bottomRight,
+                                    width: 180,
+                                    height: 180,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                      BorderRadius.all(Radius.circular(30)),
+                                    ),
+                                    child: Timer(),
+                                  ),
+                                  // Image.asset(
+                                  //     'assets/flower.png', width: 120, height: 120)
+                                ]),
+                          ],
+                        ),
+                        // ElevatedButton(
+                        //     onPressed: () {
+                        //       signOut();
+                        //       Navigator.of(context).pop(LogIn());
+                        //     },
+                        //     child: Text("logout")),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              // 시간표
+                              width: 377.1,
+                              height: 330,
+                              padding: const EdgeInsets.all(5.7),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20.0)),
+                              child: TimeTable(
+                                subjectList1: [...subjectList],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                })
-            : const Center(child: CircularProgressIndicator()));
+                          ],
+                        ),
+                      ],
+                    ));
+              }
+            );
+          }
+        });
   }
 }
 

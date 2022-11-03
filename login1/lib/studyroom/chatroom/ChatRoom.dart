@@ -20,11 +20,10 @@ class _ChatRoomState extends State<ChatRoom> {
       appBar: AppBar(
         elevation: 0.0,
         shape: const Border(
-          bottom: BorderSide(
-            color: Color(0xFFF1F1F1),
-            width: 2,
-          )
-        ),
+            bottom: BorderSide(
+          color: Color(0xFFF1F1F1),
+          width: 2,
+        )),
         centerTitle: false,
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -41,9 +40,11 @@ class _ChatRoomState extends State<ChatRoom> {
         title: Padding(
           padding: const EdgeInsets.only(left: 0.0),
           child: Text('${widget.name} 자유 채팅방',
-              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              style: const TextStyle(
+                  color: Colors.black, fontWeight: FontWeight.bold)),
         ),
       ),
+<<<<<<< HEAD
       body: Container(
         child: Column(
           children: [
@@ -51,6 +52,10 @@ class _ChatRoomState extends State<ChatRoom> {
             MessageForm()
           ],
         ),
+=======
+      body: Column(
+        children: [Messages(), MessageForm()],
+>>>>>>> 71bae1f5caaa353ebe70ed5179d80cc31d9acbe7
       ),
     );
   }
