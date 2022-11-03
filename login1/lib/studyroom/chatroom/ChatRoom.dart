@@ -47,7 +47,7 @@ class _ChatRoomState extends State<ChatRoom> {
       body: Container(
         child: Column(
           children: [
-            Messages(),
+            Expanded(child: Messages()),
             MessageForm()
           ],
         ),
