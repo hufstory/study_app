@@ -263,7 +263,7 @@ class _QuestionPageState extends State<QuestionPage> {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFFE37E7E),
+                      backgroundColor: const Color(0xFFE37E7E),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)
                       )

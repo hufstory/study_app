@@ -14,7 +14,7 @@ class Messages extends StatelessWidget {
           .orderBy("time", descending: true).snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -30,7 +30,7 @@ class Messages extends StatelessWidget {
                 Row(
                   children: [
                     Text(chatDocs[index]["text"]),
-                    SizedBox(width: 20.0,),
+                    const SizedBox(width: 20.0),
                     // Text(timeFormat.format(chatDocs[index]["time"])),
                   ],
                 ),

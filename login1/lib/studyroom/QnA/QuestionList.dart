@@ -11,37 +11,38 @@ class QuestionList extends StatefulWidget {
 }
 
 class _QuestionListState extends State<QuestionList> {
-  final questions = FirebaseFirestore.instance.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("question");
+  final questions = FirebaseFirestore.instance
+      .collection("studyroom")
+      .doc("7HvZizNSwWGTnlSrAGQ0")
+      .collection("question");
 
   @override
   Widget build(BuildContext context) {
-    // questions.get().then((docs) => {
-    //   docs.docs.forEach((doc) {
-    //     print(doc.data());
-    //   })
-    // });
     return StreamBuilder<List<QuestionModel>>(
       stream: streamQuestions(),
       builder: (context, asyncSnapshot) {
-        if(!asyncSnapshot.hasData) {
+        if (!asyncSnapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
-        }
-        else if(asyncSnapshot.hasError) {
-          return const Center(child: Text("오류가 발생했습니다."),);
-        }
-        else {
+        } else if (asyncSnapshot.hasError) {
+          return const Center(child: Text("오류가 발생했습니다."));
+        } else {
           List<QuestionModel> questions = asyncSnapshot.data!;
           return Expanded(
             child: ListView.separated(
                 itemBuilder: (context, index) {
                   String uid = questions[index].author;
                   String name = '';
-                  FirebaseFirestore.instance.collection("users").doc(uid).get().then((doc) => {name = doc.data()!['Name']});
+                  FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(uid)
+                      .get()
+                      .then((doc) => {name = doc.data()!['Name']});
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
                           context, // 질문 상세 및 전체 답변 페이지 이동
-                          MaterialPageRoute(builder: (context) => OnQuestion()));
+                          MaterialPageRoute(
+                              builder: (context) => const OnQuestion()));
                     },
                     child: Container(
                       height: 160,
@@ -61,22 +62,23 @@ class _QuestionListState extends State<QuestionList> {
                                   color: Colors.blue,
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 8.0),
+                                  padding: const EdgeInsets.only(left: 8.0),
                                   child: Text(
                                     // 유저 닉네임이 들어갈 부분입니다.
-                                    '${name}',
-                                    style: TextStyle(
-                                        fontSize: 20, fontWeight: FontWeight.bold),
+                                    name,
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 )
                               ],
                             ),
                             Text(
                               // 질문 내용이 들어갈 부분입니다.
-                              '${questions[index].description}',
+                              questions[index].description,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.bold),
                             ),
                             Padding(
@@ -89,20 +91,25 @@ class _QuestionListState extends State<QuestionList> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            // 클릭 시 답변페이지로 이동
-                                              builder: (context) => AnswerPage()));
+                                              // 클릭 시 답변페이지로 이동
+                                              builder: (context) =>
+                                                  const AnswerPage()));
                                     },
                                     style: OutlinedButton.styleFrom(
                                         shape: const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10))),
-                                        side: const BorderSide(color: Colors.white),
-                                        backgroundColor: const Color(0xFFFFEDED)),
+                                        side: const BorderSide(
+                                            color: Colors.white),
+                                        backgroundColor:
+                                            const Color(0xFFFFEDED)),
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: const [
                                         Icon(
-                                          Icons.subdirectory_arrow_right_rounded,
+                                          Icons
+                                              .subdirectory_arrow_right_rounded,
                                           size: 20,
                                         ),
                                         SizedBox(width: 10),
@@ -154,21 +161,24 @@ class QuestionModel {
 
   factory QuestionModel.fromMap({required Map<String, dynamic> map}) {
     return QuestionModel(
-      title: map['title']??'',
-      description: map['description']??'',
-      author: map['author']??'',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      author: map['author'] ?? '',
     );
   }
 }
 
 Stream<List<QuestionModel>> streamQuestions() {
-  final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("question").snapshots();
+  final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance
+      .collection("studyroom")
+      .doc("7HvZizNSwWGTnlSrAGQ0")
+      .collection("question")
+      .snapshots();
   return snapshots.map((querySnapshot) {
     List<QuestionModel> questions = [];
     querySnapshot.docs.forEach((element) {
-      questions.add(QuestionModel.fromMap(
-        map: element.data() as Map<String, dynamic>
-      ));
+      questions.add(
+          QuestionModel.fromMap(map: element.data() as Map<String, dynamic>));
     });
     return questions;
   });

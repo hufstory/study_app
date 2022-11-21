@@ -23,12 +23,10 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List docList = [];
 List scheduleList = [];
-bool _isLoading = true;
-bool _isInit = true;
 
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
-var _auth = FirebaseAuth.instance;
+// var _auth = FirebaseAuth.instance;
 String email = FirebaseAuth.instance.currentUser!.email.toString();
 
 Future readStudyData() async {
@@ -37,8 +35,6 @@ Future readStudyData() async {
     for (var element in temp) {
       docList.add(element);
     }
-    // print('len: ${docList.length}');
-    // print('UID: $uid');
     readScheduleData();
     readSubjectData();
   });
@@ -70,7 +66,6 @@ Future readSubjectData() async {
       for (var doc in qs.docs) {
         subjectList.add(doc['studyName'].toString());
       }
-      // print(subjectList);
     });
   }
 }
@@ -96,7 +91,7 @@ class _mainPageState extends State<mainPage> {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(image: AssetImage('assets/background.png'))),
-      child: MaterialApp(
+      child: const MaterialApp(
         title: 'mainpage',
         debugShowCheckedModeBanner: false,
         home: MainPage(),
@@ -113,7 +108,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  String? Email = "example.com";
+  String? email = "example.com";
 
   @override
   Widget build(BuildContext context) {
@@ -219,12 +214,12 @@ class _MainPageState extends State<MainPage> {
                       children: [
                         TextButton(
                           onPressed: () {},
-                          child: Text(
-                            getToday(),
-                            style: TextStyle(color: Colors.black),
-                          ),
                           style: TextButton.styleFrom(
                               textStyle: const TextStyle(fontSize: 25)),
+                          child: Text(
+                            getToday(),
+                            style: const TextStyle(color: Colors.black),
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -328,7 +323,7 @@ class _MainPageState extends State<MainPage> {
 }
 
 class TimeTable extends StatefulWidget {
-  TimeTable({Key? key, required this.subjectList1}) : super(key: key);
+  const TimeTable({Key? key, required this.subjectList1}) : super(key: key);
 
   final List subjectList1; // 스터디 과목 리스트
   @override
@@ -585,14 +580,5 @@ class _TimeTableState extends State<TimeTable> {
               textStyle: const TextStyle(color: Colors.grey)),
           events: _buildTableEvent5()),
     ];
-  }
-}
-
-Future signOut() async {
-  try {
-    return await _auth.signOut();
-  } catch (e) {
-    print('error: $e');
-    return null;
   }
 }
