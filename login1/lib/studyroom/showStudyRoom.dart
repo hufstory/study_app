@@ -29,7 +29,9 @@ class _StudyRoomState extends State<StudyRoom> {
         .snapshots()
         .listen(
       (QuerySnapshot qs) {
-        qs.docs.forEach((doc) => ruleList.add(doc["title"]));
+        for (var doc in qs.docs) {
+          ruleList.add(doc["title"]);
+        }
       },
     );
     db
@@ -38,7 +40,9 @@ class _StudyRoomState extends State<StudyRoom> {
         .collection('alert')
         .snapshots()
         .listen((QuerySnapshot qs) {
-      qs.docs.forEach((doc) => alertList.add(doc["title"]));
+      for (var doc in qs.docs) {
+        alertList.add(doc["title"]);
+      }
     });
   }
 
@@ -286,10 +290,10 @@ class _StudyRoomState extends State<StudyRoom> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                QuestionPage()));
+                                                const QuestionPage()));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      primary: const Color(0xFFD9D9D9),
+                                      backgroundColor: const Color(0xFFD9D9D9),
                                       fixedSize: const Size(55, 55),
                                       shape: const CircleBorder()),
                                   child: const Text(
@@ -305,7 +309,7 @@ class _StudyRoomState extends State<StudyRoom> {
                                                 studyName: widget.studyName)));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      primary: const Color(0xFFD9D9D9),
+                                      backgroundColor: const Color(0xFFD9D9D9),
                                       fixedSize: const Size(55, 55),
                                       shape: const CircleBorder()),
                                   child: const Text('📝',
@@ -319,7 +323,7 @@ class _StudyRoomState extends State<StudyRoom> {
                                                 name: widget.studyName)));
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      primary: const Color(0xFFD9D9D9),
+                                      backgroundColor: const Color(0xFFD9D9D9),
                                       fixedSize: const Size(55, 55),
                                       shape: const CircleBorder()),
                                   child: const Text('👋🏻',
