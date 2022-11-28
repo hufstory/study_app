@@ -5,7 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MessageForm extends StatefulWidget {
-  const MessageForm({Key? key}) : super(key: key);
+  final String studyID;
+  const MessageForm({Key? key, required this.studyID}) : super(key: key);
 
   @override
   State<MessageForm> createState() => _MessageFormState();
@@ -130,7 +131,7 @@ class _MessageFormState extends State<MessageForm> {
                   String Nickname = "";
                   await db.collection("users").doc(uid).get().then((value) => Nickname = value.data()!["Nickname"]);
 
-                  await db.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("talk").doc().set({
+                  await db.collection("studyroom").doc(widget.studyID).collection("talk").doc().set({
                     "text": _userEnterMessage,
                     "Nickname": Nickname,
                     "time": DateTime.now(),

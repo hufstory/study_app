@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'QuestionList.dart';
 
 class QAPage extends StatefulWidget {
-  const QAPage({Key? key, required this.studyName}) : super(key: key);
+  const QAPage({Key? key, required this.studyID, required this.studyName}) : super(key: key);
+  final String studyID;
   final String studyName;
 
   @override
@@ -175,7 +176,7 @@ class _QAPageState extends State<QAPage> {
             ),
           ],
         ),
-        const QuestionList()
+        QuestionList(studyID: widget.studyID)
       ]),
     );
   }

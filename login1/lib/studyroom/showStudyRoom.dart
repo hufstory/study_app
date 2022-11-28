@@ -290,7 +290,7 @@ class _StudyRoomState extends State<StudyRoom> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const QuestionPage()));
+                                                QuestionPage(studyID: widget.studyID)));
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFFD9D9D9),
@@ -306,7 +306,9 @@ class _StudyRoomState extends State<StudyRoom> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) => QAPage(
-                                                studyName: widget.studyName)));
+                                                studyID: widget.studyID,
+                                                studyName: widget.studyName
+                                            )));
                                   },
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFFD9D9D9),
@@ -320,6 +322,7 @@ class _StudyRoomState extends State<StudyRoom> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) => ChatRoom(
+                                                studyID: widget.studyID,
                                                 name: widget.studyName)));
                                   },
                                   style: ElevatedButton.styleFrom(

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:login1/SignUpPage.dart';
 
 class QuestionPage extends StatefulWidget {
-  const QuestionPage({Key? key}) : super(key: key);
+  final String studyID;
+  const QuestionPage({Key? key, required this.studyID}) : super(key: key);
 
   @override
   State<QuestionPage> createState() => _QuestionPageState();
@@ -255,7 +256,7 @@ class _QuestionPageState extends State<QuestionPage> {
                   onPressed: _descriptionController.text.isEmpty && _titleController.text.isEmpty ? null : () async {
                     String userName = '';
                     await db.collection("users").doc(uid).get().then((value) => userName = value.data()!['Name']);
-                    await db.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("question").doc().set({
+                    await db.collection("studyroom").doc(widget.studyID).collection("question").doc().set({
                       "title": _title,
                       "description": _description,
                       "author": userName,

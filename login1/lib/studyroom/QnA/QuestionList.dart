@@ -4,23 +4,18 @@ import 'AnswerPage.dart';
 import '../OnQuestion/OnQuestion.dart';
 
 class QuestionList extends StatefulWidget {
-  const QuestionList({Key? key}) : super(key: key);
+  final String studyID;
+  const QuestionList({Key? key, required this.studyID}) : super(key: key);
 
   @override
   State<QuestionList> createState() => _QuestionListState();
 }
 
 class _QuestionListState extends State<QuestionList> {
-  final questions = FirebaseFirestore.instance
-      .collection("studyroom")
-      .doc("7HvZizNSwWGTnlSrAGQ0")
-      .collection("question");
-
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder<List<QuestionModel>>(
-      stream: streamQuestions(),
+      stream: streamQuestions(widget.studyID),
       builder: (context, asyncSnapshot) {
         if (!asyncSnapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
@@ -161,10 +156,10 @@ class QuestionModel {
   }
 }
 
-Stream<List<QuestionModel>> streamQuestions() {
+Stream<List<QuestionModel>> streamQuestions(String studyID) {
   final Stream<QuerySnapshot> snapshots = FirebaseFirestore.instance
       .collection("studyroom")
-      .doc("7HvZizNSwWGTnlSrAGQ0")
+      .doc(studyID)
       .collection("question")
       .snapshots();
   return snapshots.map((querySnapshot) {
