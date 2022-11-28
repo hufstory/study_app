@@ -253,10 +253,12 @@ class _QuestionPageState extends State<QuestionPage> {
             Center(
               child: ElevatedButton(
                   onPressed: _descriptionController.text.isEmpty && _titleController.text.isEmpty ? null : () async {
+                    String userName = '';
+                    await db.collection("users").doc(uid).get().then((value) => userName = value.data()!['Name']);
                     await db.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("question").doc().set({
                       "title": _title,
                       "description": _description,
-                      "author": uid,
+                      "author": userName,
                     }).onError((error, stackTrace) => print(error));
 
                     showSnackBar(context, "질문을 등록했습니다.");

@@ -15,11 +15,7 @@ class _QuestionListState extends State<QuestionList> {
 
   @override
   Widget build(BuildContext context) {
-    // questions.get().then((docs) => {
-    //   docs.docs.forEach((doc) {
-    //     print(doc.data());
-    //   })
-    // });
+
     return StreamBuilder<List<QuestionModel>>(
       stream: streamQuestions(),
       builder: (context, asyncSnapshot) {
@@ -34,9 +30,6 @@ class _QuestionListState extends State<QuestionList> {
           return Expanded(
             child: ListView.separated(
                 itemBuilder: (context, index) {
-                  String uid = questions[index].author;
-                  String name = '';
-                  FirebaseFirestore.instance.collection("users").doc(uid).get().then((doc) => {name = doc.data()!['Name']});
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -64,7 +57,7 @@ class _QuestionListState extends State<QuestionList> {
                                   padding: EdgeInsets.only(left: 8.0),
                                   child: Text(
                                     // 유저 닉네임이 들어갈 부분입니다.
-                                    '${name}',
+                                    '${questions[index].author}',
                                     style: TextStyle(
                                         fontSize: 20, fontWeight: FontWeight.bold),
                                   ),
