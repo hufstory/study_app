@@ -4,9 +4,10 @@ import 'package:login1/studyroom/chatroom/messages.dart';
 import 'package:login1/studyroom/chatroom/MessageForm.dart';
 
 class ChatRoom extends StatefulWidget {
+  final String studyID;
   final String name;
 
-  const ChatRoom({Key? key, required this.name}) : super(key: key);
+  const ChatRoom({Key? key, required this.studyID, required this.name}) : super(key: key);
 
   @override
   State<ChatRoom> createState() => _ChatRoomState();
@@ -44,18 +45,11 @@ class _ChatRoomState extends State<ChatRoom> {
                   color: Colors.black, fontWeight: FontWeight.bold)),
         ),
       ),
-<<<<<<< HEAD
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(child: Messages()),
-            MessageForm()
-          ],
-        ),
-=======
       body: Column(
-        children: [Messages(), MessageForm()],
->>>>>>> 71bae1f5caaa353ebe70ed5179d80cc31d9acbe7
+        children: [
+          Messages(studyID: widget.studyID),
+          MessageForm(studyID: widget.studyID)
+        ],
       ),
     );
   }

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:login1/SignUpPage.dart';
 
 class QuestionPage extends StatefulWidget {
-  const QuestionPage({Key? key}) : super(key: key);
+  final String studyID;
+  const QuestionPage({Key? key, required this.studyID}) : super(key: key);
 
   @override
   State<QuestionPage> createState() => _QuestionPageState();
@@ -253,17 +254,19 @@ class _QuestionPageState extends State<QuestionPage> {
             Center(
               child: ElevatedButton(
                   onPressed: _descriptionController.text.isEmpty && _titleController.text.isEmpty ? null : () async {
-                    await db.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("question").doc().set({
+                    String userName = '';
+                    await db.collection("users").doc(uid).get().then((value) => userName = value.data()!['Name']);
+                    await db.collection("studyroom").doc(widget.studyID).collection("question").doc().set({
                       "title": _title,
                       "description": _description,
-                      "author": uid,
+                      "author": userName,
                     }).onError((error, stackTrace) => print(error));
 
                     showSnackBar(context, "질문을 등록했습니다.");
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFFE37E7E),
+                      backgroundColor: const Color(0xFFE37E7E),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)
                       )

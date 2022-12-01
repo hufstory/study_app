@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Messages extends StatelessWidget {
-  const Messages({Key? key}) : super(key: key);
+  final String studyID;
+  const Messages({Key? key, required this.studyID}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     DateFormat timeFormat = DateFormat.jm();
 
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection("studyroom").doc("7HvZizNSwWGTnlSrAGQ0").collection("talk")
+      stream: FirebaseFirestore.instance.collection("studyroom").doc(studyID).collection("talk")
           .orderBy("time", descending: true).snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -30,7 +31,7 @@ class Messages extends StatelessWidget {
                 Row(
                   children: [
                     Text(chatDocs[index]["text"]),
-                    SizedBox(width: 20.0,),
+                    const SizedBox(width: 20.0),
                     // Text(timeFormat.format(chatDocs[index]["time"])),
                   ],
                 ),

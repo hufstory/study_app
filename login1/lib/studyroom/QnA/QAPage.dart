@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'QuestionList.dart';
 
 class QAPage extends StatefulWidget {
-  const QAPage({Key? key, required this.studyName}) : super(key: key);
+  const QAPage({Key? key, required this.studyID, required this.studyName}) : super(key: key);
+  final String studyID;
   final String studyName;
 
   @override
@@ -15,7 +16,7 @@ class _QAPageState extends State<QAPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Color(0xFFE37E7E),
+        backgroundColor: const Color(0xFFE37E7E),
         // 앱바 투명
         elevation: 0.0,
         leading: TextButton(
@@ -158,7 +159,7 @@ class _QAPageState extends State<QAPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0)
                         ),
-                        primary: const Color(0xFFFFEDED),
+                        backgroundColor: const Color(0xFFFFEDED),
                         fixedSize: const Size(30, 40)
                       ),
                       child: const Text(
@@ -175,7 +176,7 @@ class _QAPageState extends State<QAPage> {
             ),
           ],
         ),
-        QuestionList()
+        QuestionList(studyID: widget.studyID)
       ]),
     );
   }
