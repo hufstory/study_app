@@ -3,9 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login1/SignUpPage.dart';
 
+
 class QuestionPage extends StatefulWidget {
   final String studyID;
-  const QuestionPage({Key? key, required this.studyID}) : super(key: key);
+
+  const QuestionPage(
+      {Key? key, required this.studyID})
+      : super(key: key);
 
   @override
   State<QuestionPage> createState() => _QuestionPageState();
@@ -122,9 +126,9 @@ class _QuestionPageState extends State<QuestionPage> {
               children: [
                 Positioned(
                     child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 100,
-                )),
+                      width: MediaQuery.of(context).size.width,
+                      height: 100,
+                    )),
                 Positioned(
                     left: 40,
                     top: 20,
@@ -158,10 +162,12 @@ class _QuestionPageState extends State<QuestionPage> {
             const Padding(
               padding: EdgeInsets.only(left: 10.0),
               child: Text('제목',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
+              padding: const EdgeInsets.only(
+                  left: 10.0, right: 10.0, top: 4.0),
               child: Container(
                 alignment: AlignmentDirectional.center,
                 width: MediaQuery.of(context).size.width,
@@ -184,10 +190,12 @@ class _QuestionPageState extends State<QuestionPage> {
                         filled: true,
                         fillColor: Colors.white,
                         enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
+                            borderSide:
+                            const BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(10)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
+                            borderSide:
+                            const BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(10))),
                   ),
                 ),
@@ -197,10 +205,12 @@ class _QuestionPageState extends State<QuestionPage> {
             const Padding(
               padding: EdgeInsets.only(left: 10.0),
               child: Text('질문 내용',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
+              padding: const EdgeInsets.only(
+                  left: 10.0, right: 10.0, top: 4.0),
               child: Container(
                 alignment: AlignmentDirectional.center,
                 width: MediaQuery.of(context).size.width,
@@ -226,10 +236,12 @@ class _QuestionPageState extends State<QuestionPage> {
                         filled: true,
                         fillColor: Colors.white,
                         enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
+                            borderSide:
+                            const BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(10)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
+                            borderSide:
+                            const BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(10))),
                   ),
                 ),
@@ -239,10 +251,12 @@ class _QuestionPageState extends State<QuestionPage> {
             const Padding(
               padding: EdgeInsets.only(left: 10.0),
               child: Text('사진 업로드',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0, bottom: 4.0),
+              padding: const EdgeInsets.only(
+                  left: 10.0, right: 10.0, top: 4.0, bottom: 4.0),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: 40,
@@ -253,14 +267,29 @@ class _QuestionPageState extends State<QuestionPage> {
             ),
             Center(
               child: ElevatedButton(
-                  onPressed: _descriptionController.text.isEmpty && _titleController.text.isEmpty ? null : () async {
+                  onPressed: _descriptionController.text.isEmpty &&
+                      _titleController.text.isEmpty
+                      ? null
+                      : () async {
                     String userName = '';
-                    await db.collection("users").doc(uid).get().then((value) => userName = value.data()!['Name']);
-                    await db.collection("studyroom").doc(widget.studyID).collection("question").doc().set({
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .get()
+                        .then((value) =>
+                    userName = value.data()!['Name']);
+                    var doc = await db
+                        .collection("studyroom")
+                        .doc(widget.studyID)
+                        .collection("question")
+                        .doc();
+                    doc.set({
                       "title": _title,
                       "description": _description,
                       "author": userName,
-                    }).onError((error, stackTrace) => print(error));
+                      "documentID": doc.id,
+                    }).onError(
+                            (error, stackTrace) => print(error));
 
                     showSnackBar(context, "질문을 등록했습니다.");
                     Navigator.pop(context);
@@ -268,17 +297,18 @@ class _QuestionPageState extends State<QuestionPage> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFE37E7E),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)
-                      )
-                  ),
+                          borderRadius: BorderRadius.circular(20))),
                   child: const Text(
                     "제출하기",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Colors.black),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                        color: Colors.black),
                   )),
             )
           ],
         ),
-      ),
+      )
     );
   }
 }

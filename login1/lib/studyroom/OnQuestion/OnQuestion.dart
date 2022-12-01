@@ -1,14 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login1/studyroom/OnQuestion/OnQuestionAnswerList.dart';
 
 class OnQuestion extends StatefulWidget {
-  const OnQuestion({Key? key}) : super(key: key);
+  final String studyID;
+  final String documentID;
+  final String title;
+  final String description;
+  final String author;
+  const OnQuestion({Key? key, required this.studyID, required this.documentID, required this.title, required this.description, required this.author}) : super(key: key);
 
   @override
   State<OnQuestion> createState() => _OnQuestionState();
 }
 
 class _OnQuestionState extends State<OnQuestion> {
+  final db = FirebaseFirestore.instance;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,20 +123,20 @@ class _OnQuestionState extends State<OnQuestion> {
                           height: 45,
                           color: Colors.blue,
                         ),
-                        const Padding(
+                        Padding(
                           padding: EdgeInsets.only(left: 8.0),
                           child: Text(
-                            'USER',
+                            '${widget.author}',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         )
                       ],
                     ),
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.all(9.0),
                       child: Text(
-                        '테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다테스트용 문장입니다',
+                        '${widget.description}',
                         style: TextStyle(
                             fontSize: 13, fontWeight: FontWeight.bold),
                       ),
@@ -136,7 +146,9 @@ class _OnQuestionState extends State<OnQuestion> {
               ),
             ),
           ]),
-          OnQuestionAnswerList()
-        ]));
+          OnQuestionAnswerList(studyID: widget.studyID, documentID: widget.documentID)
+        ]),
+    );
   }
 }
+
