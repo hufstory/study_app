@@ -31,7 +31,7 @@ class _QuestionListState extends State<QuestionList> {
                       Navigator.push(
                           context, // 질문 상세 및 전체 답변 페이지 이동
                           MaterialPageRoute(
-                              builder: (context) => const OnQuestion()));
+                              builder: (context) => OnQuestion(studyID: widget.studyID, documentID: questions[index].documentID, title: questions[index].title, description: questions[index].description, author: questions[index].author)));
                     },
                     child: Container(
                       height: 160,
@@ -81,7 +81,7 @@ class _QuestionListState extends State<QuestionList> {
                                           MaterialPageRoute(
                                               // 클릭 시 답변페이지로 이동
                                               builder: (context) =>
-                                                  const AnswerPage()));
+                                                  AnswerPage(studyID: widget.studyID, questionID: questions[index].documentID)));
                                     },
                                     style: OutlinedButton.styleFrom(
                                         shape: const RoundedRectangleBorder(
@@ -140,11 +140,13 @@ class QuestionModel {
   final String title;
   final String description;
   final String author;
+  final String documentID;
 
   QuestionModel({
     this.title = '',
     this.description = '',
     this.author = '',
+    this.documentID = '',
   });
 
   factory QuestionModel.fromMap({required Map<String, dynamic> map}) {
@@ -152,8 +154,10 @@ class QuestionModel {
       title: map['title'] ?? '',
       description: map['description'] ?? '',
       author: map['author'] ?? '',
+      documentID: map['documentID'] ?? '',
     );
   }
+
 }
 
 Stream<List<QuestionModel>> streamQuestions(String studyID) {

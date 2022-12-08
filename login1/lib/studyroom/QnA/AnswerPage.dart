@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login1/SignUpPage.dart';
 
 class AnswerPage extends StatefulWidget {
-  const AnswerPage({Key? key}) : super(key: key);
+  final String studyID;
+  final String questionID;
+  const AnswerPage({Key? key, required this.studyID, required this.questionID}) : super(key: key);
 
   @override
   State<AnswerPage> createState() => _AnswerPageState();
 }
 
 class _AnswerPageState extends State<AnswerPage> {
+  final TextEditingController _answerController = TextEditingController();
+  final db = FirebaseFirestore.instance;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  String _answer = '';
+
+  @override
+  void dispose() {
+    _answerController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,6 +171,12 @@ class _AnswerPageState extends State<AnswerPage> {
                   width: MediaQuery.of(context).size.width - 30,
                   height: 240,
                   child: TextField(
+                    controller: _answerController,
+                    onChanged: (value) {
+                      setState(() {
+                        _answer = value;
+                      });
+                    },
                     keyboardType: TextInputType.multiline,
                     maxLines: 20,
                     decoration: InputDecoration(
@@ -190,9 +212,19 @@ class _AnswerPageState extends State<AnswerPage> {
             ),
             Center(
               child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed:  _answerController.text.isEmpty ? null : () async {
+                    String userName = '';
+                    await db.collection("users").doc(uid).get().then((value) => userName = value.data()!['Name']);
+                    await db.collection("studyroom").doc(widget.studyID).collection("question").doc(widget.questionID).collection("answer").doc().set({
+                      "description": _answer,
+                      "author": userName,
+                    }).onError((error, stackTrace) => print(error));
+
+                    showSnackBar(context, "답변을 등록했습니다.");
+                    Navigator.pop(context);
+                  },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE37E7E),
+                      primary: Color(0xFFE37E7E),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)
                       )
