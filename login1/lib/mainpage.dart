@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'package:login1/studyroom/showStudyRoom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:login1/StudyList.dart';
 
 import 'timer.dart';
 import 'dart:math';
@@ -89,8 +90,8 @@ class _mainPageState extends State<mainPage> {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp]); // 가로방향 못돌리게
     return Container(
-      decoration: const BoxDecoration(
-          image: DecorationImage(image: AssetImage('assets/background.png'))),
+      // decoration: const BoxDecoration(
+      //     image: DecorationImage(image: AssetImage('assets/background.png'))),
       child: const MaterialApp(
         title: 'mainpage',
         debugShowCheckedModeBanner: false,
@@ -153,6 +154,7 @@ class _MainPageState extends State<MainPage> {
                         ],
                       ),
                     ),
+                    backgroundColor: const Color(0xFFF7B5B5),
                     endDrawer: Drawer(
                       child: ListView(
                         padding: EdgeInsets.zero,
@@ -208,7 +210,6 @@ class _MainPageState extends State<MainPage> {
                         ],
                       ),
                     ),
-                    backgroundColor: Colors.transparent,
                     body: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -231,10 +232,7 @@ class _MainPageState extends State<MainPage> {
                               decoration: const BoxDecoration(
                                 color: Colors.white,
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(30)),
-                                image: DecorationImage(
-                                  image: AssetImage('assets/grass.png'),
-                                ),
+                                BorderRadius.all(Radius.circular(30))
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
@@ -274,7 +272,7 @@ class _MainPageState extends State<MainPage> {
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.only(
-                                        top: 40.0, bottom: 15.0, right: 40.0),
+                                        top: 20.0, bottom: 15.0, right: 30.0),
                                     alignment: Alignment.bottomRight,
                                     width: 180,
                                     height: 180,
@@ -285,8 +283,6 @@ class _MainPageState extends State<MainPage> {
                                     ),
                                     child: Timer(),
                                   ),
-                                  // Image.asset(
-                                  //     'assets/flower.png', width: 120, height: 120)
                                 ]),
                           ],
                         ),
@@ -297,7 +293,7 @@ class _MainPageState extends State<MainPage> {
                         //     },
                         //     child: Text("logout")),
                         Stack(
-                          alignment: Alignment.center,
+                          alignment: Alignment.topLeft,
                           children: [
                             Container(
                               // 시간표
@@ -309,6 +305,25 @@ class _MainPageState extends State<MainPage> {
                                   borderRadius: BorderRadius.circular(20.0)),
                               child: TimeTable(
                                 subjectList1: [...subjectList],
+                              ),
+                            ),
+                            Positioned(
+                              left: 6,
+                              top: -9,
+                              child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    padding: const EdgeInsets.all(3),
+                                      alignment: Alignment.center,
+                                      fixedSize: const Size(20, 20),
+                                      minimumSize: const Size(20, 20),
+                                      backgroundColor: Colors.red
+                                  ),
+                                  onPressed: (){
+                                    Navigator.of(context, rootNavigator: true)
+                                        .push(MaterialPageRoute(
+                                        builder: (context) => StudyList()));
+                                  },
+                                  child: const Icon(Icons.add, color: Colors.black, size: 15)
                               ),
                             ),
                           ],
