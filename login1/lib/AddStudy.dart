@@ -7,9 +7,13 @@ class AddStudy extends StatefulWidget {
   State<AddStudy> createState() => _AddStudyState();
 }
 
+List<String> dropdown = [for (var i = 2; i <= 100; i++) i.toString()];
+String selectedDropdown = '2';
+
 class _AddStudyState extends State<AddStudy> {
   @override
   Widget build(BuildContext context) {
+    print(dropdown);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
@@ -31,15 +35,16 @@ class _AddStudyState extends State<AddStudy> {
           actions: [
             Builder(
               // Drawer 아이콘 색 지정 위해 Builder 위젯 사용
-              builder: (context) => IconButton(
-                icon: const Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer(); // Drawer 열음
-                },
-              ),
+              builder: (context) =>
+                  IconButton(
+                    icon: const Icon(
+                      Icons.menu,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openEndDrawer(); // Drawer 열음
+                    },
+                  ),
             )
           ],
         ),
@@ -110,9 +115,12 @@ class _AddStudyState extends State<AddStudy> {
                 children: [
                   Positioned(
                       child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 100,
-                  )),
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
+                        height: 100,
+                      )),
                   Positioned(
                       left: 40,
                       top: 20,
@@ -153,13 +161,19 @@ class _AddStudyState extends State<AddStudy> {
               padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
               child: Container(
                 alignment: AlignmentDirectional.center,
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 height: 50,
                 decoration: BoxDecoration(
                     color: const Color(0xFFFFEDED),
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 30,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width - 30,
                   child: TextField(
                     // controller: _titleController,
                     onChanged: (value) {
@@ -185,7 +199,7 @@ class _AddStudyState extends State<AddStudy> {
             const SizedBox(height: 10.0),
             const Padding(
               padding: EdgeInsets.only(left: 10.0),
-              child: Text('인원 / 정원',
+              child: Text('정원',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
             Padding(
@@ -198,26 +212,28 @@ class _AddStudyState extends State<AddStudy> {
                     color: const Color(0xFFFFEDED),
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 30,
-                  child: TextField(
-                    // controller: _titleController,
-                    onChanged: (value) {
-                      // setState(() {
-                      //   _title = value;
-                      // });
-                    },
-                    decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: const EdgeInsets.all(10),
-                        filled: true,
-                        fillColor: Colors.white,
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(10)),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.white),
-                            borderRadius: BorderRadius.circular(10))),
-                  ),
+                    width: MediaQuery.of(context).size.width - 30,
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: DropdownButtonFormField(
+                        alignment: Alignment.center,
+                        menuMaxHeight: 250,
+                        value: selectedDropdown,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedDropdown = newValue!;
+                          });
+                        },
+                        items: dropdown.map<DropdownMenuItem<String>>(
+                                (String value) {
+                              return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value)
+                              );
+                            }
+                        ).toList(),
+                      ),
+                    )
                 ),
               ),
             ),
@@ -231,13 +247,19 @@ class _AddStudyState extends State<AddStudy> {
               padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
               child: Container(
                 alignment: AlignmentDirectional.center,
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 height: 200,
                 decoration: BoxDecoration(
                     color: const Color(0xFFFFEDED),
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 30,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width - 30,
                   height: 190,
                   child: TextField(
                     // controller: _descriptionController,
@@ -273,13 +295,19 @@ class _AddStudyState extends State<AddStudy> {
               padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 4.0),
               child: Container(
                 alignment: AlignmentDirectional.center,
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 height: 50,
                 decoration: BoxDecoration(
                     color: const Color(0xFFFFEDED),
                     borderRadius: BorderRadius.circular(10)),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 30,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width - 30,
                   child: TextField(
                     // controller: _titleController,
                     onChanged: (value) {

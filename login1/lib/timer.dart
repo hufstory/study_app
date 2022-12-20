@@ -1,5 +1,6 @@
 // import 'dart:js_util';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import './mainpage.dart';
 
 class Timer extends StatefulWidget {
   const Timer({Key? key}) : super(key: key);
+
   @override
   State<Timer> createState() => _TimerState();
 }
@@ -16,13 +18,16 @@ final now = getToday();
 var time = 0;
 
 void studyTimer() {
-  var data = FirebaseFirestore.instance.collection('users').doc(uid).collection('studyTime')
-  .doc(now).get().then(
-          (doc) => {
-        print(doc.data()!['studyTime']),
-        time = doc.data()!['studyTime'],
-      }
-  );
+  var data = FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .collection('studyTime')
+      .doc(now)
+      .get()
+      .then((doc) => {
+            print(doc.data()!['studyTime']),
+            time = doc.data()!['studyTime'],
+          });
   print("time: ${time}");
   print(uid);
 }
@@ -33,21 +38,22 @@ class _TimerState extends State<Timer> {
 
   Stream<int> timer(uid) {
     studyTimer();
-    return Stream<int>.periodic(
-        Duration(seconds: 1),
-            (count) {
-                if(goStop==true){
-                  return time;
-                }
-                else{
-                  time += 1;
-                  FirebaseFirestore.instance.collection('users').doc(uid).collection('studyTime').doc(now).set({
-                    'studyTime': time,
-                  });
-                  return time;
-                }
-              }
-    );
+    return Stream<int>.periodic(Duration(seconds: 1), (count) {
+      if (goStop == true) {
+        return time;
+      } else {
+        time += 1;
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(uid)
+            .collection('studyTime')
+            .doc(now)
+            .set({
+          'studyTime': time,
+        });
+        return time;
+      }
+    });
   }
 
   @override
@@ -60,7 +66,43 @@ class _TimerState extends State<Timer> {
           final minute = (snapshot.data! ~/ 60).toString();
           final second = (snapshot.data! % 60).toString();
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    elevation: 0.0,
+                    backgroundColor: const Color(0XFFE37E7E),
+                    fixedSize: const Size(90, 5),
+                    minimumSize: const Size(90, 30)),
+                onPressed: () {
+                  if (goStop == false) {
+                    goStop = true;
+                  } else {
+                    goStop = false;
+                  }
+                  print(goStop);
+                },
+                child: goStop
+                    ? const Text('START',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17))
+                    : const Text('STOP',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17)),
+              ),
+              const Text(
+                '오늘 나의 공부시간',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
               RichText(
                 text: TextSpan(
                   children: [
@@ -73,7 +115,7 @@ class _TimerState extends State<Timer> {
                       ),
                     ),
                     TextSpan(
-                      text: 'H',
+                      text: 'H ',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 30,
@@ -89,7 +131,7 @@ class _TimerState extends State<Timer> {
                       ),
                     ),
                     TextSpan(
-                      text: 'M',
+                      text: 'M ',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 30,
@@ -115,22 +157,8 @@ class _TimerState extends State<Timer> {
                   ],
                 ),
               ),
-              FloatingActionButton(
-                onPressed: (){
-                  if(goStop == false){
-                    goStop = true;
-                  }
-                  else{
-                    goStop = false;
-                  }
-                  print(goStop);
-                },
-                child: Icon(Icons.pause),
-              )
             ],
           );
-        }
-    );
+        });
   }
-
 }
