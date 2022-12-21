@@ -25,10 +25,19 @@ Set<String> subjectList = {};
 List docList = [];
 List scheduleList = [];
 
+String Email = '';
+String Name = '';
+
+Future getUserData() async {
+  await db.collection('users').doc(uid!).get().then((user) {
+    Email = user.data()!['Email'];
+    Name = user.data()!['Name'];
+  });
+}
+
 var user = FirebaseAuth.instance.currentUser;
 var uid = user?.uid;
 // var _auth = FirebaseAuth.instance;
-String email = FirebaseAuth.instance.currentUser!.email.toString();
 
 Future readStudyData() async {
   await db.collection('users').doc(uid!).get().then((DocumentSnapshot ds) {
@@ -82,6 +91,7 @@ class _mainPageState extends State<mainPage> {
   @override
   initState() {
     readStudyData();
+    getUserData();
     super.initState();
   }
 
@@ -156,12 +166,12 @@ class _MainPageState extends State<MainPage> {
                         child: ListView(
                           padding: EdgeInsets.zero,
                           children: [
-                            const UserAccountsDrawerHeader(
+                            UserAccountsDrawerHeader(
                               currentAccountPicture: CircleAvatar(
                                 backgroundImage: AssetImage('assets/boo.png'),
                               ),
-                              accountName: Text('BOO'),
-                              accountEmail: Text(''),
+                              accountName: Text('${Name}'),
+                              accountEmail: Text('${Email}'),
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(
                                     begin: Alignment.topLeft,

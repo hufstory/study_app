@@ -1,4 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login1/SignUpPage.dart';
+
+String Email = '';
+String Name = '';
+FirebaseFirestore db = FirebaseFirestore.instance;
+var uid = FirebaseAuth.instance.currentUser!.uid;
+
+Future getUserData() async {
+  await db.collection('users').doc(uid!).get().then((user) {
+    Email = user.data()!['Email'];
+    Name = user.data()!['Name'];
+  });
+}
 
 class AddStudy extends StatefulWidget {
   const AddStudy({Key? key}) : super(key: key);
@@ -11,6 +26,27 @@ List<String> dropdown = [for (var i = 2; i <= 100; i++) i.toString()];
 String selectedDropdown = '2';
 
 class _AddStudyState extends State<AddStudy> {
+  final TextEditingController _subjectNameController = TextEditingController();
+  final TextEditingController _studyRuleController = TextEditingController();
+  final TextEditingController _studyIntroController = TextEditingController();
+  String _subjectName = '';
+  String _studyRule = '';
+  String _studyIntro = '';
+
+  @override
+  void initState() {
+    getUserData();
+    super.initState();
+  }
+  
+  @override
+  void dispose() {
+    _subjectNameController.dispose();
+    _studyRuleController.dispose();
+    _studyIntroController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     print(dropdown);
@@ -53,12 +89,12 @@ class _AddStudyState extends State<AddStudy> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const UserAccountsDrawerHeader(
+            UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
                 backgroundImage: AssetImage('assets/boo.png'),
               ),
-              accountName: Text('BOO'),
-              accountEmail: Text('boo@hufs.ac.kr'),
+              accountName: Text('${Name}'),
+              accountEmail: Text('${Email}'),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -175,11 +211,11 @@ class _AddStudyState extends State<AddStudy> {
                       .size
                       .width - 30,
                   child: TextField(
-                    // controller: _titleController,
+                    controller: _subjectNameController,
                     onChanged: (value) {
-                      // setState(() {
-                      //   _title = value;
-                      // });
+                      setState(() {
+                        _subjectName = value;
+                      });
                     },
                     decoration: InputDecoration(
                         isDense: true,
@@ -262,11 +298,11 @@ class _AddStudyState extends State<AddStudy> {
                       .width - 30,
                   height: 190,
                   child: TextField(
-                    // controller: _descriptionController,
+                    controller: _studyRuleController,
                     onChanged: (value) {
-                      // setState(() {
-                      //   _description = value;
-                      // });
+                      setState(() {
+                        _studyRule = value;
+                      });
                     },
                     keyboardType: TextInputType.multiline,
                     maxLines: 20,
@@ -309,11 +345,11 @@ class _AddStudyState extends State<AddStudy> {
                       .size
                       .width - 30,
                   child: TextField(
-                    // controller: _titleController,
+                    controller: _studyIntroController,
                     onChanged: (value) {
-                      // setState(() {
-                      //   _title = value;
-                      // });
+                      setState(() {
+                        _studyIntro = value;
+                      });
                     },
                     decoration: InputDecoration(
                         isDense: true,
@@ -334,7 +370,17 @@ class _AddStudyState extends State<AddStudy> {
             Align(
               alignment: Alignment.center,
               child: TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await db.collection("studyroom").doc().set({
+                      "subjectName": _subjectName,
+                      "studyRule": _studyRule,
+                      "studyIntro": _studyIntro,
+                      "memberLimit": selectedDropdown,
+                    });
+
+                    showSnackBar(context, "스터디그룹을 등록했습니다.");
+                    Navigator.pop(context);
+                  },
                   style: TextButton.styleFrom(
                       backgroundColor: const Color(0XFFE37E7E),
                       shape: RoundedRectangleBorder(

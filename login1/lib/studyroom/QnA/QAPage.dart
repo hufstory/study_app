@@ -1,5 +1,19 @@
 import 'package:flutter/material.dart';
 import 'QuestionList.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+String Email = '';
+String Name = '';
+FirebaseFirestore db = FirebaseFirestore.instance;
+var uid = FirebaseAuth.instance.currentUser!.uid;
+
+Future getUserData() async {
+  await db.collection('users').doc(uid!).get().then((user) {
+    Email = user.data()!['Email'];
+    Name = user.data()!['Name'];
+  });
+}
 
 class QAPage extends StatefulWidget {
   const QAPage({Key? key, required this.studyID, required this.studyName}) : super(key: key);
@@ -11,6 +25,12 @@ class QAPage extends StatefulWidget {
 }
 
 class _QAPageState extends State<QAPage> {
+  @override
+  void initState() {
+    getUserData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,12 +67,12 @@ class _QAPageState extends State<QAPage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const UserAccountsDrawerHeader(
+            UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
                 backgroundImage: AssetImage('assets/boo.png'),
               ),
-              accountName: Text('BOO'),
-              accountEmail: Text('boo@hufs.ac.kr'),
+              accountName: Text('${Name}'),
+              accountEmail: Text('${Email}'),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,

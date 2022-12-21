@@ -3,6 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login1/SignUpPage.dart';
 
+String Email = '';
+String Name = '';
+FirebaseFirestore db = FirebaseFirestore.instance;
+var uid = FirebaseAuth.instance.currentUser!.uid;
+
+Future getUserData() async {
+  await db.collection('users').doc(uid!).get().then((user) {
+    Email = user.data()!['Email'];
+    Name = user.data()!['Name'];
+  });
+}
 
 class QuestionPage extends StatefulWidget {
   final String studyID;
@@ -22,6 +33,12 @@ class _QuestionPageState extends State<QuestionPage> {
   final uid = FirebaseAuth.instance.currentUser!.uid;
   String _title = '';
   String _description = '';
+
+  @override
+  void initState() {
+    getUserData();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -66,12 +83,12 @@ class _QuestionPageState extends State<QuestionPage> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const UserAccountsDrawerHeader(
+            UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
                 backgroundImage: AssetImage('assets/boo.png'),
               ),
-              accountName: Text('BOO'),
-              accountEmail: Text('boo@hufs.ac.kr'),
+              accountName: Text('${Name}'),
+              accountEmail: Text('${Email}'),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,

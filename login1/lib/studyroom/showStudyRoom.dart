@@ -3,8 +3,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login1/studyroom/chatroom/ChatRoom.dart';
 import 'package:login1/studyroom/QnA/QuestionPage.dart';
 import 'package:login1/studyroom/QnA/QAPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
+String Email = '';
+String Name = '';
 FirebaseFirestore db = FirebaseFirestore.instance;
+var uid = FirebaseAuth.instance.currentUser!.uid;
+
+Future getUserData() async {
+  await db.collection('users').doc(uid!).get().then((user) {
+    Email = user.data()!['Email'];
+    Name = user.data()!['Name'];
+  });
+}
 
 Set ruleList = {};
 Set alertList = {};
@@ -128,6 +139,7 @@ class _StudyRoomState extends State<StudyRoom> {
 
   @override
   initState() {
+    getUserData();
     readData();
     ruleList.clear();
     alertList.clear();
@@ -181,12 +193,12 @@ class _StudyRoomState extends State<StudyRoom> {
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: [
-                      const UserAccountsDrawerHeader(
+                      UserAccountsDrawerHeader(
                         currentAccountPicture: CircleAvatar(
                           backgroundImage: AssetImage('assets/boo.png'),
                         ),
-                        accountName: Text('BOO'),
-                        accountEmail: Text('boo@hufs.ac.kr'),
+                        accountName: Text('${Name}'),
+                        accountEmail: Text('${Email}'),
                         decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topLeft,
