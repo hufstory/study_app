@@ -7,6 +7,8 @@ import 'package:flutter_timetable_view/flutter_timetable_view.dart';
 import 'package:login1/studyroom/showStudyRoom.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:login1/StudyList.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:adaptive_action_sheet/adaptive_action_sheet.dart';
 
 import 'timer.dart';
 import 'dart:math';
@@ -24,9 +26,11 @@ FirebaseFirestore db = FirebaseFirestore.instance;
 Set<String> subjectList = {};
 List docList = [];
 List scheduleList = [];
+bool isPlayerOn = false;
 
 String Email = '';
 String Name = '';
+String songTitle = '비 오는 소리';
 
 Future getUserData() async {
   await db.collection('users').doc(uid!).get().then((user) {
@@ -80,6 +84,8 @@ Future readSubjectData() async {
   }
 }
 
+
+
 class mainPage extends StatefulWidget {
   const mainPage({Key? key}) : super(key: key);
 
@@ -120,6 +126,23 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   String? email = "example.com";
+  final player = AudioPlayer();
+
+  playMusic() async {
+    // await player.setSource(AssetSource('rain.mp3'));
+    if (isPlayerOn) {
+      switch (songTitle) {
+        case '비 오는 소리' :
+          await player.play(AssetSource('rain.mp3'));
+          break;
+        case '모닥불 소리':
+          await player.play(AssetSource('fire.mp3'));
+          break;
+      }
+    } else {
+      await player.pause();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +153,7 @@ class _MainPageState extends State<MainPage> {
             return const Center(child: CircularProgressIndicator());
           } else {
             return FutureBuilder(
-                future: Future.delayed(const Duration(milliseconds: 800)),
+                future: Future.delayed(const Duration(milliseconds: 500)),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -303,9 +326,68 @@ class _MainPageState extends State<MainPage> {
                           Container(
                             width: 367.1,
                             height: 40,
+                            padding: const EdgeInsets.only(left: 15.0, right: 3.0),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15)
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text('📢', style: TextStyle(fontSize: 20)),
+                                const SizedBox(width: 10),
+                                Text(songTitle, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                                const SizedBox(width: 95),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: (){
+                                        setState(() {
+                                          isPlayerOn = !isPlayerOn;
+                                        });
+                                        playMusic();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          visualDensity: const VisualDensity(horizontal: -2.0),
+                                          elevation: 0.0,
+                                          backgroundColor: const Color(0XFFEFEFEF),
+                                          shape: const CircleBorder(),
+                                          fixedSize: const Size(25, 25)
+                                      ),
+                                      child: isPlayerOn ? const Icon(Icons.pause, color: Colors.black) : const Icon(Icons.play_arrow, color: Colors.black)),
+                                    ElevatedButton(
+                                        onPressed: (){
+                                          showAdaptiveActionSheet(
+                                              context: context,
+                                              androidBorderRadius: 30,
+                                              actions: <BottomSheetAction>[
+                                                BottomSheetAction(title: const Text('비 오는 소리'), onPressed: (context){
+                                                  setState(() {
+                                                    songTitle = '비 오는 소리';
+                                                  });
+                                                  Navigator.of(context).pop();
+                                                }),
+                                                BottomSheetAction(title: const Text('모닥불 소리'), onPressed: (context){
+                                                  setState(() {
+                                                    songTitle = '모닥불 소리';
+                                                  });
+                                                  Navigator.of(context).pop();
+                                                }),
+                                              ],
+                                              cancelAction: CancelAction(title: const Text('닫기'))
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            elevation: 0.0,
+                                            backgroundColor: const Color(0XFFEFEFEF),
+                                            shape: const CircleBorder(),
+                                            fixedSize: const Size(25, 25)
+                                        ),
+                                        child: const Icon(Icons.more_horiz, color: Colors.black))
+                                  ],
+                                )
+                              ],
                             ),
                           ),
                           Stack(
@@ -612,3 +694,5 @@ class _TimeTableState extends State<TimeTable> {
     ];
   }
 }
+
+

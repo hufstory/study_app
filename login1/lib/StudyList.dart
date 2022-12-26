@@ -168,7 +168,7 @@ class _StudyListState extends State<StudyList> {
                                     memberLimit = studyRooms[index].memberLimit;
                                   });
                                   showSnackBar(context, "스터디그룹에 가입했습니다.");
-                                  print(studyRooms);
+                                  print(studyRooms[index].studyID.runtimeType);
                                 },
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
@@ -289,7 +289,6 @@ Stream<List<StudyRoomModel>> streamQuestions() {
       questions.add(
           StudyRoomModel.fromMap(map: element.data() as Map<String, dynamic>));
     });
-    print(questions);
     return questions;
   });
 }
